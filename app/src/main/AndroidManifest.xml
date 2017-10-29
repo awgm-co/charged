@@ -42,7 +42,7 @@
             android:label="@string/title_activity_charged_maps" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>
