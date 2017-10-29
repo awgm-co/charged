@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     Fragment devices;
     Fragment places;
+
     FragmentTransaction bottomNav;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -60,12 +60,40 @@ public class MainActivity extends AppCompatActivity {
 
     };
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        bottomNav = fragmentManager.
+                beginTransaction();
+        if(devices == null){
+            Log.d(M,"ONE TIME: devices fragment was null");
+            devices = new Fragment();
+        }
+        if(devices != null) {
+            Log.d(M,"ONE TIME: serving devices fragment");
+            bottomNav.add(R.id.content, devices);
+            bottomNav.commit();
+        }
+
+
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(M, "onOptionsItemSelected()");
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Log.d(M, "onOptionsItemSelected():case:action_settings");
-                Toast.makeText(this, "Pretend the Settings opened", Toast.LENGTH_LONG).show();
+                Intent toolbarSettings = new Intent(this,
+                        SettingsActivity.class);
+                startActivity(toolbarSettings);
+                //Toast.makeText(this, "Pretend the Settings opened", Toast.LENGTH_LONG).show();
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
             //case R.id.option_get_place:
@@ -97,29 +125,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.toolbar, menu);
         return true;
     }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        bottomNav = fragmentManager.
-                beginTransaction();
-        if(devices == null){
-            Log.d(M,"ONE TIME: devices fragment was null");
-            devices = new Fragment();
-        }
-        if(devices != null) {
-            Log.d(M,"ONE TIME: serving devices fragment");
-            bottomNav.add(R.id.content, devices);
-            bottomNav.commit();
-        }
-
-
-    }
 
 }
