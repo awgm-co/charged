@@ -12,12 +12,12 @@
             android:key="pref_key_zoom_buttons"
             android:title="@string/zoom_buttons"
             android:summary="@string/zoom_buttons_summary"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="pref_key_compass"
             android:title="@string/compass"
             android:summary="@string/compass_summary"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="pref_key_mylocation_button"
             android:title="@string/mylocation_button"
@@ -27,21 +27,21 @@
             android:key="pref_key_scroll"
             android:title="@string/scroll"
             android:summary="@string/scroll_summary"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="pref_key_zoom_gestures"
             android:title="@string/zoom_gestures"
             android:summary="@string/zoom_gestures_summary"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="pref_key_tilt"
             android:title="@string/tilt"
             android:summary="@string/tilt_summary"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="pref_key_rotate"
             android:title="@string/rotate"
             android:summary="@string/rotate_summary"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
     </PreferenceCategory>
 </PreferenceScreen>

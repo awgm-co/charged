@@ -415,12 +415,18 @@ public class ChargedMapsActivity extends AppCompatActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setIndoorEnabled(true);
         mMap.setBuildingsEnabled(true);
-
         mMap.getUiSettings().setMapToolbarEnabled(true);
         mMap.getUiSettings().setIndoorLevelPickerEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
+
+        GenerateMarkers();
     }
+
+    private  void GenerateMarkers() {
+
+    }
+
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
