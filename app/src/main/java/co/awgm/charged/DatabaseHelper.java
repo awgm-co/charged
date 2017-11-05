@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Andrew on 30/10/2017.
@@ -26,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_LOCATION_CODE = "locationCode";
     private static final String KEY_LAT = "lat";
-    private static final String KEY_LNG = "Lng";
+    private static final String KEY_LNG = "lng";
     private static final String KEY_NAME = "name";
     private static final String KEY_SIGNAGE = "signage";
     private static final String KEY_INFO = "info";
@@ -126,7 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         ChargedPlace place = new ChargedPlace(
-                Integer.parseInt(cursor.getString(0)),
+                //Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1),
                 cursor.getString(2),
                 cursor.getString(3),
@@ -143,10 +142,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return place;
     }
 
-    public List<ChargedPlace> getChargedPlaces(){
+    public ArrayList<ChargedPlace> getChargedPlaces(){
         Log.d(M, "getChargedPlaces");
 
-        List<ChargedPlace> placesList = new ArrayList<>();
+        ArrayList<ChargedPlace> placesList = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_PLACES;
 
@@ -156,7 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do {
                 ChargedPlace place = new ChargedPlace();
-                        place.setID(Integer.parseInt(cursor.getString(0)));
+                        //place.setID(Integer.parseInt(cursor.getString(0)));
                         place.setLocationCode(cursor.getString(1));
                         place.setLat(cursor.getString(2));
                         place.setLng(cursor.getString(3));
@@ -249,12 +248,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //
     //}
 
-    public void loadMarkersFromFile(){
+    public void loadMarkersFromFile(Context context) {
         Log.d(M, "loadMarkersFromFile");
 
-        addTestPlaces();
+        JsonFileReader JsonFileReader = new JsonFileReader();
 
+        ArrayList<ChargedPlace> arrayList = JsonFileReader.ReadJsonFile(context);
+
+        for (int i = 0; i < arrayList.size(); i++){
+            addPlace(arrayList.get(i));
+        }
     }
+
+
+
+
 
     private void addTestPlaces() {
 
@@ -343,6 +351,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
+
+
 
 
     //https://www.youtube.com/watch?v=K6cYSNXb9ew&ab_channel=TihomirRAdeff

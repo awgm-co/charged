@@ -1,13 +1,11 @@
 package co.awgm.charged;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-
 /**
  * Created by Andrew on 30/10/2017.
  */
 
 public class ChargedPlace {
+
 
 
 
@@ -24,13 +22,12 @@ public class ChargedPlace {
     private String categoryId;      //9
     private String categoryHandle;  //12
     private String keywords;        //13
-    private Marker mapMarker;
-    private LatLng latLng;
 
 
     public int getID() {
         return this.ID;
     }
+
     public void setID(int ID) {
         this.ID = ID;
     }
@@ -130,64 +127,16 @@ public class ChargedPlace {
         this.keywords = keywords;
     }
 
-    public Marker getMapMarker() {
-        return this.mapMarker;
-    }
-
-    public void setMapMarker(Marker mapMarker) {
-        this.mapMarker = mapMarker;
-    }
-
-    public LatLng getLatLng() {
-        this.setLatLng(new LatLng(Double.parseDouble(this.getLat()), Double.parseDouble(this.getLng())));
-        return this.latLng;
-    }
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
-    }
-
-
-
-
-
 
     public ChargedPlace(){
 
     }
-    public ChargedPlace(
-            int newID,
-            String newLocationCode,
-            String newName,
-            String newLat,
-            String newLng,
-            String newSignage,
-            String newInfo,
-            String newIcon,
-            String newContainerID,
-            String newContainerName,
-            String newCategoryID,
-            String newCategoryHandle,
-            String newKeywords) {
-        ID = newID;
-        locationCode = newLocationCode;
-        name = newName;
-        lat = newLat;
-        lng = newLng;
-        signage = newSignage;
-        info = newInfo;
-        iconFileName = newIcon;
-        containerId = newContainerID;
-        containerName = newContainerName;
-        categoryId = newCategoryID;
-        categoryHandle = newCategoryHandle;
-        keywords = newKeywords;
-    }
+
     public ChargedPlace(
             String newLocationCode,
-            String newName,
             String newLat,
             String newLng,
+            String newName,
             String newSignage,
             String newInfo,
             String newIcon,
@@ -197,9 +146,9 @@ public class ChargedPlace {
             String newCategoryHandle,
             String newKeywords) {
         locationCode = newLocationCode;
-        name = newName;
         lat = newLat;
         lng = newLng;
+        name = newName;
         signage = newSignage;
         info = newInfo;
         iconFileName = newIcon;

@@ -1,6 +1,7 @@
 package co.awgm.charged;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -35,7 +36,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.List;
+import java.util.ArrayList;
+
+import co.awgm.charged.PermissionUtils.PermissionDeniedDialog;
 
 public class ChargedMapsActivity extends AppCompatActivity
         implements
@@ -64,6 +67,9 @@ public class ChargedMapsActivity extends AppCompatActivity
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
+    // Keys for storing activity state.
+    public static final String KEY_CAMERA_POSITION = "camera_position";
+    public static final String KEY_LOCATION = "location";
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
@@ -81,69 +87,11 @@ public class ChargedMapsActivity extends AppCompatActivity
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    // Keys for storing activity state.
-    public static final String KEY_CAMERA_POSITION = "camera_position";
-    public static final String KEY_LOCATION = "location";
+
 
     private UiSettings mUiSettings;
     private CheckBox mMyLocationButtonCheckbox;
     private CheckBox mMyLocationLayerCheckbox;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(M, "onCreate()");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_charged_maps);
-
-
-
-
-
-        // Retrieve location and camera position from saved instance state.
-        if (savedInstanceState != null) {
-            Log.d(M, "Retrieving previous Location and Camera Position");
-            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
-        }
-
-        mMyLocationButtonCheckbox = (CheckBox) findViewById(R.id.mylocationbutton_toggle);
-        mMyLocationLayerCheckbox = (CheckBox) findViewById(R.id.mylocationlayer_toggle);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-
-        if (savedInstanceState == null) {
-            // First incarnation of this activity.
-            mapFragment.setRetainInstance(true);
-        }
-
-
-
-        mapFragment.getMapAsync(this);
-
-
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-
-        // Construct a PlaceDetectionClient.
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
-        // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Prompt the user for permission.
-        getLocationPermission();
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
-
-
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,8 +108,11 @@ public class ChargedMapsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Log.d(M, "onOptionsItemSelected():case:action_settings");
-                Toast.makeText(this, "Pretend the Settings opened", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "Pretend the Settings opened", Toast.LENGTH_LONG).show();
                 // User chose the "Settings" item, show the app settings UI...
+                Intent toolbarSettings = new Intent(this,
+                        SettingsActivity.class);
+                startActivity(toolbarSettings);
                 return true;
             case R.id.action_nearby:
                 getDeviceLocation();
@@ -174,12 +125,80 @@ public class ChargedMapsActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
     }
+    /**
+     * Saves the state of the map when the activity is paused.
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(M, "onSaveInstanceState Line 325");
+        if (mMap != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
+            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
+            super.onSaveInstanceState(outState);
+        }
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Log.d(M, "onCreate()");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_charged_maps);
+
+        // Retrieve location and camera position from saved instance state.
+        if (savedInstanceState != null) {
+            Log.d(M, "Retrieving previous Location and Camera Position");
+            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+        }
+
+//        mMyLocationButtonCheckbox = (CheckBox) findViewById(R.id.mylocationbutton_toggle);
+//        mMyLocationLayerCheckbox = (CheckBox) findViewById(R.id.mylocationlayer_toggle);
+
+
+
+        // Prompt the user for permission.
+        getLocationPermission();
+
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // Construct a PlaceDetectionClient.
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+
+        // Construct a FusedLocationProviderClient.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(this);
+
+        if (savedInstanceState == null) {
+            // First incarnation of this activity.
+            mapFragment.setRetainInstance(true);
+        }
+
+
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+
+
+
+    }
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(M, "Map is Ready now");
         mMap = googleMap;
-
+        setUpMap();
+        AddMarkers();
         mUiSettings = mMap.getUiSettings();
+
         // Keep the UI Settings state in sync with the checkboxes.
         mUiSettings.setZoomControlsEnabled(isChecked(R.id.zoom_buttons_toggle));
         mUiSettings.setCompassEnabled(isChecked(R.id.compass_toggle));
@@ -187,12 +206,13 @@ public class ChargedMapsActivity extends AppCompatActivity
 
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.d(M, "Passed Permissions Check");
             mMap.setMyLocationEnabled(isChecked(R.id.mylocationlayer_toggle));
+
         }
 
         mUiSettings.setMapToolbarEnabled(true);
@@ -203,8 +223,7 @@ public class ChargedMapsActivity extends AppCompatActivity
         mUiSettings.setRotateGesturesEnabled(isChecked(R.id.rotate_toggle));
 
         mMap.setOnMyLocationButtonClickListener(this);
-        GenerateMarkers();
-        setUpMap();
+
         getDeviceLocation();
     }
     /**
@@ -317,17 +336,7 @@ public class ChargedMapsActivity extends AppCompatActivity
         // Enables/disables rotate gestures.
         mUiSettings.setRotateGesturesEnabled(((CheckBox) v).isChecked());
     }
-    /**
-     * Saves the state of the map when the activity is paused.
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
-            super.onSaveInstanceState(outState);
-        }
-    }
+
 
 
 
@@ -424,41 +433,48 @@ public class ChargedMapsActivity extends AppCompatActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setIndoorEnabled(true);
         mMap.setBuildingsEnabled(true);
-        mMap.getUiSettings().setMapToolbarEnabled(true);
+
         mMap.getUiSettings().setIndoorLevelPickerEnabled(true);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
+        //mMap.getUiSettings().setZoomGesturesEnabled(true);
+        //mMap.getUiSettings().setRotateGesturesEnabled(true);
 
 
     }
 
-    private  void GenerateMarkers() {
-        Log.d(M, "GenerateMarkers()");
+    private  void AddMarkers() {
+        Log.d(M, "AddMarkers()");
 
         DatabaseHelper db = new DatabaseHelper(this);
+        int i;
+        db.getPlacesCount();
+        db.loadMarkersFromFile(this);
+        Log.d(M,String.valueOf(db.getPlacesCount()));
+//        if(db.getPlacesCount()<1){
+//            Log.d(M,"Database contained no places");
+//            db.loadMarkersFromFile(this);
+//        }
 
-        db.loadMarkersFromFile();
-
-        List<ChargedPlace> allPlaces = db.getChargedPlaces();
+        ArrayList<ChargedPlace> allPlaces = db.getChargedPlaces();
 
         mMap.addMarker(new MarkerOptions()
                 .position( new LatLng(-32.067003,115.834838))
                 .title("Test Marker"));
 
 
-
-        for (ChargedPlace place: allPlaces){
-            Log.d("GENERATE MARKERS", place.getLocationCode());
+        for (i = 0; i < allPlaces.size(); i++){
+            Log.d("GENERATE MARKERS", allPlaces.get(i).getLocationCode());
 
             mMap.addMarker(new MarkerOptions()
-                    .position( place.getLatLng())
-                    .title(place.getName().toString().toUpperCase())
-                    .snippet(place.getInfo().toString()));
-
+                    .position(new LatLng(
+                            Double.parseDouble(allPlaces.get(i).getLat()),
+                            Double.parseDouble(allPlaces.get(i).getLng())
+                    ))
+                    .title(allPlaces.get(i).getName().toString().toUpperCase())
+                    .snippet(allPlaces.get(i).getInfo().toString()));
         }
 
-        int placesCount = db.getPlacesCount();
-        Toast.makeText(this, "Loaded " + String.valueOf(placesCount) + " Places", Toast.LENGTH_LONG).show();
+
+        Toast.makeText(this, "Loaded " + i + " Places", Toast.LENGTH_LONG).show();
 
     }
 
@@ -473,6 +489,7 @@ public class ChargedMapsActivity extends AppCompatActivity
          */
         try {
             if (mLocationPermissionGranted) {
+                Log.d(M, "Current location is available. locating user");
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
@@ -481,13 +498,10 @@ public class ChargedMapsActivity extends AppCompatActivity
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
 
-//                            mMap.addMarker(new MarkerOptions()
-//                            .position( new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
-//                            .title("You are here."));
+                            mMap.addMarker(new MarkerOptions()
+                            .position( new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
+                            .title("You are here."));
 
-//                            mMap.addMarker(new MarkerOptions()
-//                                    .position( new LatLng(-32.067003,115.834838))
-//                                    .title("Library North"));
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
@@ -516,9 +530,11 @@ public class ChargedMapsActivity extends AppCompatActivity
         }
         try {
             if (mLocationPermissionGranted) {
+                Log.d(M, "updateLocationUI() if");
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
+                Log.d(M, "updateLocationUI() else");
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
@@ -532,8 +548,7 @@ public class ChargedMapsActivity extends AppCompatActivity
      * Displays a dialog with error message explaining that the location permission is missing.
      */
     private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getSupportFragmentManager(), "dialog");
+        PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
 
