@@ -7,36 +7,39 @@ import com.google.android.gms.maps.model.Marker;
  * Created by Andrew on 30/10/2017.
  */
 
-class ChargedPlace {
-
-    String locationCode;
-    LatLng latLng;
-    String lat;
-    String lng;
-    String name;
-    String signage;
-    String info;
-    String iconFileName;
-    String containerId;
-    String containerName;
-    String categoryId;
-    String categoryHandle;
-    String keywords;
-    Marker mapMarker;
+public class ChargedPlace {
 
 
-    public String getLat() { return this.lat; }
 
-    public void setLat(String lat) { this.lat = lat; }
+    private int ID;
+    private String locationCode;    //0
+    private String name;            //1
+    private String lat;             //2
+    private String lng;             //3
+    private String signage;         //4
+    private String info;            //5
+    private String iconFileName;    //6
+    private String containerId;     //7
+    private String containerName;   //8
+    private String categoryId;      //9
+    private String categoryHandle;  //12
+    private String keywords;        //13
+    private Marker mapMarker;
+    private LatLng latLng;
 
-    public String getLng() { return this.lng; }
 
-    public void setLng(String lng) { this.lng = lng; }
+    public int getID() {
+        return this.ID;
+    }
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+    public String getLocationCode() {
+        return this.locationCode;
+    }
 
-    public LatLng getLatLng() { return this.latLng;}
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
+    public void setLocationCode(String locationCode) {
+        this.locationCode = locationCode;
     }
 
     public String getName() {
@@ -45,6 +48,22 @@ class ChargedPlace {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLat() {
+        return this.lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return this.lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 
     public String getSignage() {
@@ -103,14 +122,6 @@ class ChargedPlace {
         this.categoryHandle = categoryHandle;
     }
 
-    public String getLocationCode() {
-        return this.locationCode;
-    }
-
-    public void setLocationCode(String locationCode) {
-        this.locationCode = locationCode;
-    }
-
     public String getKeywords() {
         return this.keywords;
     }
@@ -127,8 +138,50 @@ class ChargedPlace {
         this.mapMarker = mapMarker;
     }
 
+    public LatLng getLatLng() {
+        this.setLatLng(new LatLng(Double.parseDouble(this.getLat()), Double.parseDouble(this.getLng())));
+        return this.latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
+    }
+
+
+
+
+
+
     public ChargedPlace(){
 
+    }
+    public ChargedPlace(
+            int newID,
+            String newLocationCode,
+            String newName,
+            String newLat,
+            String newLng,
+            String newSignage,
+            String newInfo,
+            String newIcon,
+            String newContainerID,
+            String newContainerName,
+            String newCategoryID,
+            String newCategoryHandle,
+            String newKeywords) {
+        ID = newID;
+        locationCode = newLocationCode;
+        name = newName;
+        lat = newLat;
+        lng = newLng;
+        signage = newSignage;
+        info = newInfo;
+        iconFileName = newIcon;
+        containerId = newContainerID;
+        containerName = newContainerName;
+        categoryId = newCategoryID;
+        categoryHandle = newCategoryHandle;
+        keywords = newKeywords;
     }
     public ChargedPlace(
             String newLocationCode,
@@ -142,46 +195,23 @@ class ChargedPlace {
             String newContainerName,
             String newCategoryID,
             String newCategoryHandle,
-            String newKeywords){
-        this.locationCode = newLocationCode;
-        this.name = newName;
-        this.lat = newLat;
-        this.lng = newLng;
-        this.signage = newSignage;
-        this.info = newInfo;
-        this.iconFileName = newIcon;
-        this.containerId = newContainerID;
-        this.containerName = newContainerName;
-        this.categoryId = newCategoryID;
-        this.categoryHandle = newCategoryHandle;
-        this.keywords = newKeywords;
+            String newKeywords) {
+        locationCode = newLocationCode;
+        name = newName;
+        lat = newLat;
+        lng = newLng;
+        signage = newSignage;
+        info = newInfo;
+        iconFileName = newIcon;
+        containerId = newContainerID;
+        containerName = newContainerName;
+        categoryId = newCategoryID;
+        categoryHandle = newCategoryHandle;
+        keywords = newKeywords;
     }
-    public ChargedPlace(
-            String newLocationCode,
-            String newName,
-            LatLng newLatLng,
-            String newSignage,
-            String newInfo,
-            String newIcon,
-            String newContainerID,
-            String newContainerName,
-            String newCategoryID,
-            String newCategoryHandle,
-            String newKeywords){
-        this.locationCode = newLocationCode;
-        this.name = newName;
-        this.latLng = newLatLng;
-        this.signage = newSignage;
-        this.info = newInfo;
-        this.iconFileName = newIcon;
-        this.containerId = newContainerID;
-        this.containerName = newContainerName;
-        this.categoryId = newCategoryID;
-        this.categoryHandle = newCategoryHandle;
-        this.keywords = newKeywords;
     }
 
 
 
 
-}
+

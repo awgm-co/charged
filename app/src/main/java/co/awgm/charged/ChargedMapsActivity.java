@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
 public class ChargedMapsActivity extends AppCompatActivity
         implements
         OnMapReadyCallback,
@@ -87,12 +89,15 @@ public class ChargedMapsActivity extends AppCompatActivity
     private CheckBox mMyLocationButtonCheckbox;
     private CheckBox mMyLocationLayerCheckbox;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(M, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charged_maps);
+
+
+
+
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -135,6 +140,9 @@ public class ChargedMapsActivity extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+
+
     }
 
     @Override
@@ -195,6 +203,7 @@ public class ChargedMapsActivity extends AppCompatActivity
         mUiSettings.setRotateGesturesEnabled(isChecked(R.id.rotate_toggle));
 
         mMap.setOnMyLocationButtonClickListener(this);
+        GenerateMarkers();
         setUpMap();
         getDeviceLocation();
     }
@@ -420,10 +429,36 @@ public class ChargedMapsActivity extends AppCompatActivity
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
 
-        GenerateMarkers();
+
     }
 
     private  void GenerateMarkers() {
+        Log.d(M, "GenerateMarkers()");
+
+        DatabaseHelper db = new DatabaseHelper(this);
+
+        db.loadMarkersFromFile();
+
+        List<ChargedPlace> allPlaces = db.getChargedPlaces();
+
+        mMap.addMarker(new MarkerOptions()
+                .position( new LatLng(-32.067003,115.834838))
+                .title("Test Marker"));
+
+
+
+        for (ChargedPlace place: allPlaces){
+            Log.d("GENERATE MARKERS", place.getLocationCode());
+
+            mMap.addMarker(new MarkerOptions()
+                    .position( place.getLatLng())
+                    .title(place.getName().toString().toUpperCase())
+                    .snippet(place.getInfo().toString()));
+
+        }
+
+        int placesCount = db.getPlacesCount();
+        Toast.makeText(this, "Loaded " + String.valueOf(placesCount) + " Places", Toast.LENGTH_LONG).show();
 
     }
 
@@ -446,9 +481,13 @@ public class ChargedMapsActivity extends AppCompatActivity
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
 
-                            mMap.addMarker(new MarkerOptions()
-                            .position( new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
-                            .title("You are here."));
+//                            mMap.addMarker(new MarkerOptions()
+//                            .position( new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
+//                            .title("You are here."));
+
+//                            mMap.addMarker(new MarkerOptions()
+//                                    .position( new LatLng(-32.067003,115.834838))
+//                                    .title("Library North"));
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
@@ -496,4 +535,8 @@ public class ChargedMapsActivity extends AppCompatActivity
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
+
+
+
+
 }

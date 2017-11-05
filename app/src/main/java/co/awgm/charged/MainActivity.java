@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -84,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
+
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(M, "onOptionsItemSelected()");
@@ -126,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.toolbar, menu);
         return true;
     }
+
+
 
 
 }
