@@ -1,6 +1,7 @@
 package co.awgm.charged;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.JsonReader;
 import android.util.Log;
@@ -22,14 +23,17 @@ public class JsonFileReader extends AppCompatActivity {
     public ArrayList<ChargedPlace> ReadJsonFile(Context context){
 
         ArrayList<ChargedPlace> jsonList = new ArrayList<ChargedPlace>();
-
+        AssetManager mngr = context.getAssets();
         Log.d(M, "LOADING MARKERS FROM FILE...");
 
+        Context appContext = getApplicationContext();
 
     String json = null;
-        try {
-            InputStream is  = context.getResources().getAssets().open("charged_map_markers.json");
 
+        try {
+            //InputStream is  = getAssets().open("raw/charged_map_markers.json");
+
+            InputStream is = appContext.getAssets().open("raw/charged_map_markers.json");
             jsonList = readJsonStream(is);
     } catch (IOException ex) {
         ex.printStackTrace();

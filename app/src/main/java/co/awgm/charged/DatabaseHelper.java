@@ -251,13 +251,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void loadMarkersFromFile(Context context) {
         Log.d(M, "loadMarkersFromFile");
 
-        JsonFileReader JsonFileReader = new JsonFileReader();
+//        JsonFileReader JsonFileReader = new JsonFileReader();
+//
+//        ArrayList<ChargedPlace> arrayList = JsonFileReader.ReadJsonFile(context);
+//
+//        for (int i = 0; i < arrayList.size(); i++){
+//            addPlace(arrayList.get(i));
+//        }
 
-        ArrayList<ChargedPlace> arrayList = JsonFileReader.ReadJsonFile(context);
-
-        for (int i = 0; i < arrayList.size(); i++){
-            addPlace(arrayList.get(i));
-        }
+        addTestPlaces();
     }
 
 

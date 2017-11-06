@@ -447,12 +447,13 @@ public class ChargedMapsActivity extends AppCompatActivity
         DatabaseHelper db = new DatabaseHelper(this);
         int i;
         db.getPlacesCount();
-        db.loadMarkersFromFile(this);
+        //db.loadMarkersFromFile(this);
         Log.d(M,String.valueOf(db.getPlacesCount()));
 //        if(db.getPlacesCount()<1){
 //            Log.d(M,"Database contained no places");
 //            db.loadMarkersFromFile(this);
 //        }
+
 
         ArrayList<ChargedPlace> allPlaces = db.getChargedPlaces();
 
