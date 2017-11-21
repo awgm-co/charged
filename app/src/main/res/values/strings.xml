@@ -1,10 +1,17 @@
 <resources>
-    <string name="app_name">Charged</string>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_tab">TabActivity</string>
-    <string name="title_devices">Devices</string>
-    <string name="title_places">Places</string>
-    <string name="title_nearby">Nearby</string>
+    <string name="title_activity_settings">Settings</string>
+
+
+    <!-- Strings related to Settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_header_map">Map Configuration</string>
+    <string name="zoom_buttons_summary">If enabled, the zoom controls are a pair of buttons (one for zooming in, one for zooming out) that appear on the screen. When pressed, they cause the camera to zoom in (or out) by one zoom level</string>
+    <string name="compass_summary">The compass is an icon on the map that indicates the direction of north on the map. If enabled, it is only shown when the camera is tilted or rotated away from its default orientation.</string>
+    <string name="mylocation_button_summary">The my-location button causes the camera to move such that the user\'s location is in the center of the map.</string>
+    <string name="scroll_summary">If enabled, users can swipe to pan the camera.</string>
+    <string name="zoom_gestures_summary">If enabled, users can either double tap/two-finger tap or pinch to zoom the camera. If disabled, these gestures have no effect. This setting doesn\'t affect the zoom buttons.</string>
+    <string name="tilt_summary">If enabled, users can use a two-finger vertical down swipe to tilt the camera. If disabled, users cannot tilt the camera via gestures. This setting doesn\'t restrict users from tapping the compass icon to reset the camera orientation.</string>
+    <string name="rotate_summary">If enabled, users can use a two-finger rotate gesture to rotate the camera. If disabled, users cannot rotate the camera via gestures. This setting doesn\'t restrict the user from tapping the compass icon to reset the camera orientation.</string>
+
+
 </resources>
