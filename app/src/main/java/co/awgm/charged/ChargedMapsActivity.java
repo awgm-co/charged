@@ -93,14 +93,16 @@ public class ChargedMapsActivity extends AppCompatActivity
     private CheckBox mMyLocationButtonCheckbox;
     private CheckBox mMyLocationLayerCheckbox;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(M, "OnCreateOptionsMenu()");
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar, menu);
+    private DatabaseHelper db;
 
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        Log.d(M, "OnCreateOptionsMenu()");
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.toolbar, menu);
+//
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -153,7 +155,7 @@ public class ChargedMapsActivity extends AppCompatActivity
 //        mMyLocationButtonCheckbox = (CheckBox) findViewById(R.id.mylocationbutton_toggle);
 //        mMyLocationLayerCheckbox = (CheckBox) findViewById(R.id.mylocationlayer_toggle);
 
-
+        db = new DatabaseHelper(this);
 
         // Prompt the user for permission.
         getLocationPermission();
@@ -195,8 +197,7 @@ public class ChargedMapsActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         Log.d(M, "Map is Ready now");
         mMap = googleMap;
-        setUpMap();
-        AddMarkers();
+
         mUiSettings = mMap.getUiSettings();
 
         // Keep the UI Settings state in sync with the checkboxes.
@@ -225,6 +226,8 @@ public class ChargedMapsActivity extends AppCompatActivity
         mMap.setOnMyLocationButtonClickListener(this);
 
         getDeviceLocation();
+        setUpMap();
+        AddMarkers();
     }
     /**
      * Returns whether the checkbox with the given id is checked.
@@ -283,6 +286,7 @@ public class ChargedMapsActivity extends AppCompatActivity
             getLocationPermission();
         }
     }
+
     public void setMyLocationLayerEnabled(View v) {
         //Default: un-checked
         if (!checkReady()) {
@@ -301,6 +305,7 @@ public class ChargedMapsActivity extends AppCompatActivity
                     Manifest.permission.ACCESS_FINE_LOCATION, false);
         }
     }
+
     public void setScrollGesturesEnabled(View v) {
         //Default: checked
         if (!checkReady()) {
@@ -337,9 +342,6 @@ public class ChargedMapsActivity extends AppCompatActivity
         mUiSettings.setRotateGesturesEnabled(((CheckBox) v).isChecked());
     }
 
-
-
-
         /*
          * Request location permission, so that we can get the location of the
          * device. The result of the permission request is handled by a callback,
@@ -359,7 +361,6 @@ public class ChargedMapsActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public boolean onMyLocationButtonClick() {
         Log.d(M, "onMyLocationButtonClick()");
@@ -368,7 +369,6 @@ public class ChargedMapsActivity extends AppCompatActivity
         // (the camera animates to the user's current position).
         return false;
     }
-
 
     /**
      * Handles the result of the request for location permissions.
@@ -393,7 +393,7 @@ public class ChargedMapsActivity extends AppCompatActivity
             if (PermissionUtils.isPermissionGranted(permissions, grantResults,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                 mUiSettings.setMyLocationButtonEnabled(true);
-                mMyLocationButtonCheckbox.setChecked(true);
+                //mMyLocationButtonCheckbox.setChecked(true);
             } else {
                 mLocationPermissionDenied = true;
             }
@@ -415,8 +415,6 @@ public class ChargedMapsActivity extends AppCompatActivity
             }
 
         }
-
-
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
@@ -444,38 +442,52 @@ public class ChargedMapsActivity extends AppCompatActivity
     private  void AddMarkers() {
         Log.d(M, "AddMarkers()");
 
-        DatabaseHelper db = new DatabaseHelper(this);
-        int i;
-        db.getPlacesCount();
-        //db.loadMarkersFromFile(this);
-        Log.d(M,String.valueOf(db.getPlacesCount()));
+
+        int i = 0,j;
+        db.loadMarkersFromFile(this);
+        ArrayList<ChargedPlace> places = db.getAllPlaces();
+        for (ChargedPlace p: places) {
+            db.addPlace(p);
+            Log.d(M, p.getLocationCode());
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(
+                            Double.parseDouble(p.getLat()),
+                            Double.parseDouble(p.getLng())
+                    ))
+                    .title(p.getName().toString().toUpperCase())
+                    .snippet(p.getInfo().toString()));
+            i++;
+        }
+
+        j = db.getPlacesCount();
 //        if(db.getPlacesCount()<1){
 //            Log.d(M,"Database contained no places");
 //            db.loadMarkersFromFile(this);
 //        }
 
+//        mMap.addMarker(new MarkerOptions()
 
-        ArrayList<ChargedPlace> allPlaces = db.getChargedPlaces();
-
-        mMap.addMarker(new MarkerOptions()
-                .position( new LatLng(-32.067003,115.834838))
-                .title("Test Marker"));
+//                .position( new LatLng(-32.067003,115.834838))
+//                .title("Test Marker"));
 
 
-        for (i = 0; i < allPlaces.size(); i++){
-            Log.d("GENERATE MARKERS", allPlaces.get(i).getLocationCode());
+//        for (i = 0; i < places.size(); i++){
+//            Log.d("GENERATE MARKERS", places.get(i).getLocationCode());
+//
+//            mMap.addMarker(new MarkerOptions()
+//                    .position(new LatLng(
+//                            Double.parseDouble(places.get(i).getLat()),
+//                            Double.parseDouble(places.get(i).getLng())
+//                    ))
+//                    .title(places.get(i).getName().toString().toUpperCase())
+//                    .snippet(places.get(i).getInfo().toString()));
+//        }
 
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(
-                            Double.parseDouble(allPlaces.get(i).getLat()),
-                            Double.parseDouble(allPlaces.get(i).getLng())
-                    ))
-                    .title(allPlaces.get(i).getName().toString().toUpperCase())
-                    .snippet(allPlaces.get(i).getInfo().toString()));
-        }
+
+        Toast.makeText(this, "Loaded " + i + " of " + j + " Places", Toast.LENGTH_LONG).show();
 
 
-        Toast.makeText(this, "Loaded " + i + " Places", Toast.LENGTH_LONG).show();
 
     }
 
@@ -495,18 +507,23 @@ public class ChargedMapsActivity extends AppCompatActivity
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isComplete()) {
+                            Log.d(M, "Task Complete");
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
+                            LatLng lastKnownLatLng = new LatLng(
+                                    mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude()
+                            );
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(lastKnownLatLng, DEFAULT_ZOOM));
+
+                            Log.d(M, "Placing 'You are here' marker...");
 
                             mMap.addMarker(new MarkerOptions()
-                            .position( new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
-                            .title("You are here."));
-
-
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                    .position(lastKnownLatLng)
+                                    .title("You are here."));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         } else {
                             Log.d(M, "Current location is null. Using defaults.");
                             Log.e(M, "Exception: %s", task.getException());
@@ -520,6 +537,8 @@ public class ChargedMapsActivity extends AppCompatActivity
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
+
+
     }
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
