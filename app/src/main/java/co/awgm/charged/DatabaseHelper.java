@@ -2,18 +2,28 @@ package co.awgm.charged;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andrew on 30/10/2017.
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    XmlPullParserFactory pullParserFactory;
 
     final static String M = "DATABASE_HELPER";
 
@@ -215,76 +225,164 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    //public List<ChargedPlace> getAllPlaces() {
-    //    Log.d(M, "GetAllPlaces");
-    //    List<ChargedPlace> placesList = new ArrayList<>();
-    //
-    //    String selectQuery = "SELECT * FROM " + TABLE_PLACES;
-    //
-    //    SQLiteDatabase db = this.getWritableDatabase();
-    //
-    //    Cursor cursor = db.rawQuery(selectQuery, null);
-    //
-    //    if (cursor.moveToFirst()) {
-    //        do {
-    //            ChargedPlace place = new ChargedPlace();
-    //            place.setLocationCode(cursor.getString(0));
-    //            place.setLat(cursor.getString(2));
-    //            place.setLng(cursor.getString(3));
-    //            place.setName(cursor.getString(1));
-    //            place.setSignage(cursor.getString(4));
-    //            place.setInfo(cursor.getString(5));
-    //            place.setIconFileName(cursor.getString(6));
-    //            place.setContainerName(cursor.getString(7));
-    //            place.setCategoryId(cursor.getString(8));
-    //            place.setCategoryHandle(cursor.getString(9));
-    //            place.setKeywords(cursor.getString(10));
-    //
-    //            placesList.add(place);
-    //        } while (cursor.moveToNext());
-    //    }
-    //
-    //    return placesList;
-    //
-    //}
+    public ArrayList<ChargedPlace> getAllPlaces() {
+        Log.d(M, "GetAllPlaces");
+        ArrayList<ChargedPlace> placesList = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_PLACES;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ChargedPlace place = new ChargedPlace();
+                place.setLocationCode(cursor.getString(0));
+                place.setLat(cursor.getString(2));
+                place.setLng(cursor.getString(3));
+                place.setName(cursor.getString(1));
+                place.setSignage(cursor.getString(4));
+                place.setInfo(cursor.getString(5));
+                place.setIconFileName(cursor.getString(6));
+                place.setContainerName(cursor.getString(7));
+                place.setCategoryId(cursor.getString(8));
+                place.setCategoryHandle(cursor.getString(9));
+                place.setKeywords(cursor.getString(10));
+
+                placesList.add(place);
+            } while (cursor.moveToNext());
+        }
+
+        return placesList;
+
+    }
 
     public void loadMarkersFromFile(Context context) {
-        Log.d(M, "loadMarkersFromFile");
+        Log.d(M, "LOADING MARKERS FROM FILE...");
 
-//        JsonFileReader JsonFileReader = new JsonFileReader();
-//
-//        ArrayList<ChargedPlace> arrayList = JsonFileReader.ReadJsonFile(context);
-//
-//        for (int i = 0; i < arrayList.size(); i++){
-//            addPlace(arrayList.get(i));
-//        }
+        AssetManager assetManager = context.getAssets();
+        XmlPullParserFactory xmlFactoryObject;
+        ArrayList<ChargedPlace> places = null;
 
-        addTestPlaces();
+        try {
+            xmlFactoryObject = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = xmlFactoryObject.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            InputStream inputStream = assetManager.open("charged_map_markers.xml");
+            parser.setInput(inputStream,null);
+
+
+            places = parseXML(parser);
+
+        } catch (XmlPullParserException e)
+            {
+                e.printStackTrace();
+        } catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        for (ChargedPlace p: places) {
+            this.addPlace(p);
+            Log.d(M, p.getLocationCode());
+        }
+    //return places;
+
+    }
+
+
+    private ArrayList<ChargedPlace> parseXML(XmlPullParser parser)
+            throws XmlPullParserException,IOException
+    {
+        Log.d(M, "parseXML()");
+
+        ArrayList<ChargedPlace> places = null;
+        int eventType = parser.getEventType();
+        ChargedPlace place = null;
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            //Log.d(M, "eventType != XmlPullParser.END_DOCUMENT");
+            String name = null;
+
+            switch (eventType) {
+                case XmlPullParser.START_DOCUMENT:
+                    //Log.d(M, "XmlPullParser.START_DOCUMENT");
+                    places = new ArrayList();
+                    break;
+                case XmlPullParser.START_TAG:
+                    name = parser.getName();
+                    //Log.d(M, name);
+                    if (name.equals("place")) {
+                        //Log.d(M, "New Place");
+                        place = new ChargedPlace();
+                    } else if (place != null) {
+                        if (name.equals("category_handle")) {
+                            place.setCategoryHandle(parser.nextText());
+                            //Log.d(M, place.getCategoryHandle());
+                        } else if (name.equals("category_id")) {
+                            place.setCategoryId(parser.nextText());
+                            } else if (name.equals("container_name")) {
+                                place.setContainerName(parser.nextText());
+                                } else if (name.equals("container_id")) {
+                                    place.setContainerId(parser.nextText());
+                                    } else if (name.equals("icon_file_name")) {
+                                        place.setIconFileName(parser.nextText());
+                                        } else if (name.equals("keywords")) {
+                                            place.setKeywords(parser.nextText());
+                                            } else if (name.equals("lat")) {
+                                                place.setLat(parser.nextText());
+                                                } else if (name.equals("lng")) {
+                                                    place.setLng(parser.nextText());
+                                                    } else if (name.equals("location_code")) {
+                                                        place.setLocationCode(parser.nextText());
+                                                        } else if (name.equals("name")) {
+                                                            place.setName(parser.nextText());
+                                                            } else if (name.equals("signage")) {
+                                                                place.setSignage(parser.nextText());
+                                                                }
+                    }
+                    break;
+
+                case XmlPullParser.END_TAG:
+                    //Log.d(M, "END_TAG");
+                    name = parser.getName();
+                    if (name.equalsIgnoreCase("place") && place != null) {
+                        places.add(place);
+                    }
+            }
+            eventType = parser.next();
+        }
+
+        return places;
     }
 
 
 
-
-
+    public void LoadTestMarkers (){
+        Log.d(M, "LoadTestMarkers");
+        addTestPlaces();
+    }
     private void addTestPlaces() {
 
-        Log.d(M, "...Adding Places...");
+        Log.d(M, "...Adding Test Places...");
 
 
         addPlace(
                 new ChargedPlace(
-                /*locationCode*/"12202003B",
-                /*lat*/"-32.066105",
-                /*lng*/"115.837124",
-                /*name*/"Engineering",
-                /*signage*/"220.2.003B",
-                /*info*/ "Room 003B, Level 2, Engineering and Energy Building, Murdoch University (Murdoch Campus), South Street, Murdoch",
-                /*icon_file_name*/"office.png",
-                /*container_id*/"1220",
-                /*container_name*/"220 - Engineering and Energy",
-                /*category_id*/"26",
-                /*category_handle*/"academic-offices",
-                /*keywords*/"EEB2.003B"));
+                "12202003B",
+                "-32.066105",
+                "115.837124",
+                "Engineering",
+                "220.2.003B",
+                "Room 003B, Level 2, Engineering and Energy Building, Murdoch University (Murdoch Campus), South Street, Murdoch",
+                "office.png",
+                "1220",
+                "220 - Engineering and Energy",
+                "26",
+                "academic-offices",
+                "EEB2.003B"));
 
 
         addPlace(

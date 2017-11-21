@@ -1,67 +1,94 @@
 package co.awgm.charged;
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.JsonReader;
 import android.util.Log;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andrew on 6/11/2017.
  */
 
-public class JsonFileReader extends AppCompatActivity {
+public class UpdateMarkers extends AppCompatActivity {
 
     final static String M = "FILE_READER";
+    private XmlPullParser Parser;
 
 
-    public ArrayList<ChargedPlace> ReadJsonFile(Context context){
+    public UpdateMarkers() {
 
-        ArrayList<ChargedPlace> jsonList = new ArrayList<ChargedPlace>();
-        AssetManager mngr = context.getAssets();
+        List<ChargedPlace> markerList = new ArrayList<ChargedPlace>();
+        AssetManager assetManager = getAssets();
+        InputStream inputStream = null;
+
         Log.d(M, "LOADING MARKERS FROM FILE...");
 
-        Context appContext = getApplicationContext();
+        XmlPullParserFactory xmlFactoryObject = null;
+        try {
+            xmlFactoryObject = XmlPullParserFactory.newInstance();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        Parser = null;
+        try {
+            Parser = xmlFactoryObject.newPullParser();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
 
-    String json = null;
 
         try {
-            //InputStream is  = getAssets().open("raw/charged_map_markers.json");
+            inputStream = assetManager.open("charged_map_markers.xml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            InputStream is = appContext.getAssets().open("raw/charged_map_markers.json");
-            jsonList = readJsonStream(is);
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    }
-    return jsonList;
-}
-
-    public ArrayList<ChargedPlace> readJsonStream(InputStream in) throws IOException {
-        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         try {
-            return readPlacesArray(reader);
-        } finally {
-            reader.close();
+            Parser.setInput(inputStream,null);
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
         }
+
+        int event = 0;
+        try {
+            event = Parser.getEventType();
+        } catch (XmlPullParserException e1) {
+            e1.printStackTrace();
+        }
+        while (event != XmlPullParser.END_DOCUMENT)  {
+                String name = Parser.getName();
+                switch (event){
+                    case XmlPullParser.START_TAG:
+                        Log.d(M, "START_TAG");
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        Log.d(M, "END_TAG");
+                        break;
+                }
+            try {
+                event = Parser.next();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.d(M, "END OF DOCUMENT");
+        }
+
     }
 
-    public ArrayList<ChargedPlace> readPlacesArray(JsonReader reader) throws IOException {
-        ArrayList<ChargedPlace> places = new ArrayList<ChargedPlace>();
 
-        reader.beginArray();
-        while (reader.hasNext()) {
-            places.add(readPlace(reader));
-        }
-        reader.endArray();
-        return places;
-    }
-
-    public ChargedPlace readPlace(JsonReader reader) throws IOException {
+    public ChargedPlace readPlaceJson(JsonReader reader) throws IOException {
         String locationCode = null;    //0
         String name = null;            //1
         String lat = null;             //2
