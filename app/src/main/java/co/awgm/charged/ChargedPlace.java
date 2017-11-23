@@ -20,7 +20,7 @@ public class ChargedPlace {
     private String containerId;     //7
     private String containerName;   //8
     private String categoryId;      //9
-    private String categoryName;  //12
+    private String categoryName;    //12
     private String keywords;        //13
 
 
@@ -31,6 +31,7 @@ public class ChargedPlace {
     public void setID(int ID) {
         this.ID = ID;
     }
+
     public String getLocationCode() {
         return this.locationCode;
     }

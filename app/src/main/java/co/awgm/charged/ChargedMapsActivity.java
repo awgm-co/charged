@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -21,8 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.Checkable;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,7 +37,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -101,7 +96,7 @@ public class ChargedMapsActivity extends AppCompatActivity
 
     private UiSettings mUiSettings;
 
-    private DatabaseHelper db;
+    private PlacesDatabaseHelper db;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -153,7 +148,6 @@ public class ChargedMapsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charged_maps);
 
-
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             Log.d(M, "Retrieving previous Location and Camera Position");
@@ -172,8 +166,8 @@ public class ChargedMapsActivity extends AppCompatActivity
 
 
 
-        //New DatabaseHelper
-        db = new DatabaseHelper(this);
+        //New PlacesDatabaseHelper
+        db = new PlacesDatabaseHelper(this);
 
 
 
@@ -389,7 +383,7 @@ public class ChargedMapsActivity extends AppCompatActivity
 //        Bitmap markerBitmap = Bitmap.createScaledBitmap(bitmap, 80, 80, false);
 
         // ArrayList to store the places
-        ArrayList<ChargedPlace> places = new ArrayList<ChargedPlace>();
+        ArrayList<ChargedPlace> places;
 
         //Get all the places from the database and store them in the ArrayList
         places = db.getAllPlaces();

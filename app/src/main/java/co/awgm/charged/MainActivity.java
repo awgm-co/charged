@@ -19,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     final static String M = "MAIN_ACTIVITY";
     private SharedPreferences mSharedPreferences;
+    private PlacesDatabaseHelper placesDb;
+    private DevicesDatabaseHelper devicesDb;
+    private boolean isFirstRun;
+
+
     Toolbar toolbar;
     Fragment devices;
     Fragment places;
@@ -67,8 +72,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        isFirstRun = mSharedPreferences.getBoolean("FIRSTRUN", true);
+
+        //New PlacesDatabaseHelper
+        placesDb = new PlacesDatabaseHelper(this);
+
+        //New DevicesDatabaseHelper
+        devicesDb = new DevicesDatabaseHelper(this);
+
+        if (isFirstRun)
+        {
+            //Populate the Devices DB with dummy entries for testing
+            devicesDb.LoadTestDevices();
+            //Load the marker information from the XML file into the Database
+            placesDb.loadMarkersFromFile();
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putBoolean("FIRSTRUN", false);
+            editor.commit();
+        }
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

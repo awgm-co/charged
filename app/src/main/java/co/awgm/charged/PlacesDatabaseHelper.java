@@ -6,7 +6,6 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Region;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
  * Created by Andrew on 30/10/2017.
  */
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class PlacesDatabaseHelper extends SQLiteOpenHelper {
 
     XmlPullParserFactory pullParserFactory;
 
@@ -45,17 +44,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_CATEGORY_ID = "categoryId";
     private static final String KEY_CATEGORY_HANDLE = "categoryHandle";
     private static final String KEY_KEYWORDS = "keywords";
+    private Context context;
 
 
 
 
 
-
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
+    public PlacesDatabaseHelper(Context _context) {
+        super(_context, DATABASE_NAME, null, DATABASE_VERSION);
         Log.d(M, "Default Constructor");
-        loadMarkersFromFile(context);
+
+        context = _context;
     }
 
     @Override
@@ -313,7 +312,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void loadMarkersFromFile(Context context) {
+    public void loadMarkersFromFile() {
         Log.d(M, "LOADING MARKERS FROM FILE...");
 
         AssetManager assetManager = context.getAssets();
@@ -335,9 +334,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
         } catch (IOException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
+        }
 
         for (ChargedPlace p: places) {
             addPlace(p);
