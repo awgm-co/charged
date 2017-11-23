@@ -20,7 +20,7 @@ public class ChargedPlace {
     private String containerId;     //7
     private String containerName;   //8
     private String categoryId;      //9
-    private String categoryHandle;  //12
+    private String categoryName;  //12
     private String keywords;        //13
 
 
@@ -111,12 +111,12 @@ public class ChargedPlace {
         this.categoryId = categoryId;
     }
 
-    public String getCategoryHandle() {
-        return this.categoryHandle;
+    public String getCategoryName() {
+        return this.categoryName;
     }
 
-    public void setCategoryHandle(String categoryHandle) {
-        this.categoryHandle = categoryHandle;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getKeywords() {
@@ -143,7 +143,7 @@ public class ChargedPlace {
             String newContainerID,
             String newContainerName,
             String newCategoryID,
-            String newCategoryHandle,
+            String newCategoryName,
             String newKeywords) {
         locationCode = newLocationCode;
         lat = newLat;
@@ -155,7 +155,7 @@ public class ChargedPlace {
         containerId = newContainerID;
         containerName = newContainerName;
         categoryId = newCategoryID;
-        categoryHandle = newCategoryHandle;
+        categoryName = newCategoryName;
         keywords = newKeywords;
     }
     }

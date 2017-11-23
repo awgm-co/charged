@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Region;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -15,7 +16,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Andrew on 30/10/2017.
@@ -55,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
         Log.d(M, "Default Constructor");
+        loadMarkersFromFile(context);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     void addPlace(ChargedPlace place){
-        Log.d(M, "Add Place");
+        //Log.d(M, "Add Place");
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -103,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CONTAINER_ID, place.getContainerId());
         values.put(KEY_CONTAINER_NAME, place.getContainerName());
         values.put(KEY_CATEGORY_ID, place.getCategoryId());
-        values.put(KEY_CATEGORY_HANDLE, place.getCategoryHandle());
+        values.put(KEY_CATEGORY_HANDLE, place.getCategoryName());
         values.put(KEY_KEYWORDS, place.getKeywords());
 
         db.insert(TABLE_PLACES, null, values);
@@ -165,7 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do {
                 ChargedPlace place = new ChargedPlace();
-                        //place.setID(Integer.parseInt(cursor.getString(0)));
+                        place.setID(Integer.parseInt(cursor.getString(0)));
                         place.setLocationCode(cursor.getString(1));
                         place.setLat(cursor.getString(2));
                         place.setLng(cursor.getString(3));
@@ -176,7 +177,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         place.setContainerId(cursor.getString(8));
                         place.setContainerName(cursor.getString(9));
                         place.setCategoryId(cursor.getString(10));
-                        place.setCategoryHandle(cursor.getString(11));
+                        place.setCategoryName(cursor.getString(11));
                         place.setKeywords(cursor.getString(12));
 
                 placesList.add(place);
@@ -200,7 +201,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CONTAINER_ID, place.getContainerId());
         values.put(KEY_CONTAINER_NAME, place.getContainerName());
         values.put(KEY_CATEGORY_ID, place.getCategoryId());
-        values.put(KEY_CATEGORY_HANDLE, place.getCategoryHandle());
+        values.put(KEY_CATEGORY_HANDLE, place.getCategoryName());
         values.put(KEY_KEYWORDS, place.getKeywords());
         int result = db.update(TABLE_PLACES, values, KEY_ID + "=?",new String[]{String.valueOf(place.getID())});
         return result;
@@ -231,26 +232,80 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT * FROM " + TABLE_PLACES;
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
+
                 ChargedPlace place = new ChargedPlace();
-                place.setLocationCode(cursor.getString(0));
+            /*ID*/
+                //String zero = cursor.getString(0);
+                //Log.d(M,"0 " + zero);
+
+            /*Location Code*/
+                //String one = cursor.getString(1);
+                //Log.d(M,"1 " + one);
+                place.setLocationCode(cursor.getString(1));
+
+            /*Latitude*/
+                //String two = cursor.getString(2);
+                //Log.d(M,"2 " + two);
                 place.setLat(cursor.getString(2));
+
+            /*Longitude*/
+                //String three = cursor.getString(3);
+                //Log.d(M,"3 " + three);
                 place.setLng(cursor.getString(3));
-                place.setName(cursor.getString(1));
-                place.setSignage(cursor.getString(4));
-                place.setInfo(cursor.getString(5));
-                place.setIconFileName(cursor.getString(6));
-                place.setContainerName(cursor.getString(7));
-                place.setCategoryId(cursor.getString(8));
-                place.setCategoryHandle(cursor.getString(9));
-                place.setKeywords(cursor.getString(10));
+
+            /*Name*/
+                //String four = cursor.getString(4);
+                //Log.d(M,"4 " + four);
+                place.setName(cursor.getString(4));
+
+            /*Signage*/
+                //Log.d(M,"5 " + five);
+                //place.setSignage(cursor.getString(5));
+                String five = cursor.getString(5);
+
+            /*Info*/
+                //String six = cursor.getString(6);
+                //Log.d(M,"6 " + six);
+                place.setInfo(cursor.getString(6));
+
+            /*Icon File Name*/
+                //String seven = cursor.getString(7);
+                //Log.d(M,"7 " + seven);
+                place.setIconFileName(cursor.getString(7));
+
+            /*Container ID*/
+                //String eight = cursor.getString(8);
+                //Log.d(M,"8 " + eight);
+                place.setContainerId(cursor.getString(8));
+
+            /*Container Name*/
+                //String nine = cursor.getString(9);
+                //Log.d(M,"9 " + nine);
+                place.setContainerName(cursor.getString(9));
+
+            /*CategoryID*/
+                //String ten = cursor.getString(10);
+                //Log.d(M,"10 " + ten);
+                place.setCategoryId(cursor.getString(10));
+
+            /*CategoryName*/
+                //String eleven = cursor.getString(11);
+                //Log.d(M,"11 " + eleven);
+                place.setCategoryName(cursor.getString(11));
+
+            /*Keywords*/
+                //String twelve = cursor.getString(12);
+                //Log.d(M,"12 " + twelve);
+                place.setKeywords(cursor.getString(12));
 
                 placesList.add(place);
+
             } while (cursor.moveToNext());
         }
 
@@ -285,11 +340,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
 
         for (ChargedPlace p: places) {
-            this.addPlace(p);
-            Log.d(M, p.getLocationCode());
+            addPlace(p);
+            //Log.d(M, p.getLocationCode());
         }
-    //return places;
-
     }
 
 
@@ -317,31 +370,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     if (name.equals("place")) {
                         //Log.d(M, "New Place");
                         place = new ChargedPlace();
-                    } else if (place != null) {
-                        if (name.equals("category_handle")) {
-                            place.setCategoryHandle(parser.nextText());
-                            //Log.d(M, place.getCategoryHandle());
-                        } else if (name.equals("category_id")) {
+                    }
+                    if (place != null) {
+
+                        if (name.equals("category_id")) {
                             place.setCategoryId(parser.nextText());
-                            } else if (name.equals("container_name")) {
-                                place.setContainerName(parser.nextText());
-                                } else if (name.equals("container_id")) {
-                                    place.setContainerId(parser.nextText());
-                                    } else if (name.equals("icon_file_name")) {
-                                        place.setIconFileName(parser.nextText());
-                                        } else if (name.equals("keywords")) {
-                                            place.setKeywords(parser.nextText());
-                                            } else if (name.equals("lat")) {
-                                                place.setLat(parser.nextText());
-                                                } else if (name.equals("lng")) {
-                                                    place.setLng(parser.nextText());
-                                                    } else if (name.equals("location_code")) {
-                                                        place.setLocationCode(parser.nextText());
-                                                        } else if (name.equals("name")) {
-                                                            place.setName(parser.nextText());
-                                                            } else if (name.equals("signage")) {
-                                                                place.setSignage(parser.nextText());
-                                                                }
+                            //Log.d(M, name + ": " + place.getCategoryId());
+                        }
+                        if (name.equals("category_name")) {
+                            place.setCategoryName(parser.nextText());
+                            //Log.d(M, name + ": " + place.getCategoryName());
+                        }
+                        if (name.equals("container_id")) {
+                            place.setContainerId(parser.nextText());
+                            //Log.d(M, name + ": " + place.getContainerId());
+                        }
+                        if (name.equals("container_name")) {
+                            place.setContainerName(parser.nextText());
+                            //Log.d(M, name + ": " + place.getContainerName());
+                        }
+                        if (name.equals("icon_file_name")) {
+                            place.setIconFileName(parser.nextText());
+                            //Log.d(M, name + ": " + place.getIconFileName());
+                        }
+                        if (name.equals("info")) {
+                            place.setInfo(parser.nextText());
+                            //Log.d(M, name + ": " + place.getInfo());
+                        }
+                        if (name.equals("keywords")) {
+                            place.setKeywords(parser.nextText());
+                            //Log.d(M, name + ": " + place.getKeywords());
+                        }
+                        if (name.equals("lat")) {
+                            place.setLat(parser.nextText());
+                            //Log.d(M, name + ": " + place.getLat());
+                        }
+                        if (name.equals("lng")) {
+                            place.setLng(parser.nextText());
+                            //Log.d(M, name + ": " + place.getLng());
+                        }
+                        if (name.equals("location_code")) {
+                            place.setLocationCode(parser.nextText());
+                            //Log.d(M, name + ": " + place.getLocationCode());
+                        }
+                        if (name.equals("name")) {
+                            place.setName(parser.nextText());
+                            //Log.d(M, name + ": " + place.getName());
+                        }
+                        if (name.equals("signage")) {
+                            place.setSignage(parser.nextText());
+                            //Log.d(M, name + ": " + place.getSignage());
+                        }
                     }
                     break;
 
@@ -349,7 +428,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     //Log.d(M, "END_TAG");
                     name = parser.getName();
                     if (name.equalsIgnoreCase("place") && place != null) {
-                        places.add(place);
+                        if (places != null) {
+                            places.add(place);
+                        } else{
+                            Log.d(M,"place was null");
+                        }
                     }
             }
             eventType = parser.next();

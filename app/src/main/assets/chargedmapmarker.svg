@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-12401 -4662 2000.0001 1999.9998"
+   version="1.1"
+   id="svg25"
+   sodipodi:docname="ChargedMapMarker.svg"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   width="1500pt"
+   height="1500pt">
+  <title
+     id="title4525">ChargedMapMarker</title>
+  <metadata
+     id="metadata29">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>ChargedMapMarker</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#ff0000"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview27"
+     showgrid="false"
+     inkscape:zoom="0.29760404"
+     inkscape:cx="180.78991"
+     inkscape:cy="770.08044"
+     inkscape:current-layer="svg25"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     inkscape:pagecheckerboard="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     units="pt"
+     inkscape:document-units="pt" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: #0097a7;
+      }
+
+      .cls-3, .cls-5, .cls-6, .cls-7, .cls-9 {
+        stroke: #fff;
+      }
+
+      .cls-3, .cls-5, .cls-6 {
+        stroke-width: 5px;
+      }
+
+      .cls-4 {
+        fill: #ffc107;
+      }
+
+      .cls-5, .cls-9 {
+        fill: #607d8b;
+      }
+
+      .cls-6 {
+        fill: #00bcd4;
+      }
+
+      .cls-7, .cls-8 {
+        fill: #9e9e9e;
+      }
+
+      .cls-7 {
+        stroke-width: 0.2px;
+      }
+
+      .cls-9 {
+        stroke-width: 4px;
+      }
+    </style>
+  </defs>
+  <g
+     transform="translate(-11806.963,-4087.4625)"
+     data-name="Group 51"
+     id="Group_51">
+    <path
+       style="fill:#0097a7;stroke:#ffffff;stroke-width:5px"
+       inkscape:connector-curvature="0"
+       transform="translate(-0.772,-0.2)"
+       d="m 405.374,-0.107 c 227.854,0 427.4,195.365 406,421 -12.236,187.38 -305.2,744.2 -403,918 0,0 -394.764,-703.115 -407,-918 -15.281,-219.075 176.145,-421 404,-421 z"
+       class="cls-3"
+       data-name="Path 265"
+       id="Path_265" />
+  </g>
+  <g
+     transform="translate(-11642.436,-4577.5918)"
+     data-name="Group 49"
+     id="Group_49">
+    <rect
+       style="fill:#ffc107"
+       y="0"
+       x="0"
+       transform="translate(155.936,142.259)"
+       height="251"
+       width="167"
+       class="cls-4"
+       data-name="Rectangle 1"
+       id="Rectangle_1" />
+    <path
+       style="fill:#607d8b;stroke:#ffffff;stroke-width:5px"
+       inkscape:connector-curvature="0"
+       transform="translate(-6,-1)"
+       d="m 475.436,131.759 h -67 v -111 c 0,-10.688 -12.187,-20 -27,-20 -14.813,0 -27,9.312 -27,20 v 111 h -214 v -111 c 0,-10.688 -12.173,-20 -27,-20 -14.827,0 -27,9.312 -27,20 v 111 h -67 c -7.413,0 -13,8.656 -13,14 v 49 c 0,58.069 134,125.731 134,219 v 231 h 209 l 5,-209 v -22 c 0,-93.269 134,-160.942 134,-219 v -49 c 0,-5.344 -5.586,-14 -13,-14 m -243,166 c 0.871,-2.117 -0.93,-4 -4,-4 h -52 c -3.083,0 -3.957,-1.3 -2,-3 0,0 107.909,-103.024 110,-105 1.582,-1.875 2.55,-1.158 2,1 -0.831,2.733 -23,73 -23,73 -1.113,2.057 -0.043,3 3,3 h 52 c 3.07,0 3.877,2.245 2,4 0,0 -107.069,104.246 -109,106 -1.931,1.754 -3.979,1.985 -3,-1 0.979,-2.985 24,-74 24,-74"
+       class="cls-5"
+       id="electrician" />
+    <path
+       style="fill:#ffc107"
+       inkscape:connector-curvature="0"
+       transform="translate(155.673,768.84)"
+       d="m 0.263,0.419 h 167 v 501 h -167 z"
+       class="cls-4"
+       data-name="Path 266"
+       id="Path_266" />
+    <path
+       style="fill:#00bcd4;stroke:#ffffff;stroke-width:5px"
+       inkscape:connector-curvature="0"
+       transform="translate(23.318,516.132)"
+       d="m 369.118,85.627 h -70 v -84 h -167 v 84 h -70 c -30.5,0 -55,25.5 -55,56 v 640 c 0,30.921 24.5,56 55,56 h 307 a 56.279,56.279 0 0 0 56,-56 v -640 c 0,-30.503 -25.497,-56 -56,-56 z m -111,585 h -84 v -84 h 84 z m 0,-167 h -84 v -209 h 84 z"
+       class="cls-6"
+       data-name="Path 243"
+       id="Path_243" />
+  </g>
+</svg>

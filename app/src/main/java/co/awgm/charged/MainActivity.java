@@ -1,6 +1,7 @@
 package co.awgm.charged;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     final static String M = "MAIN_ACTIVITY";
+    private SharedPreferences mSharedPreferences;
     Toolbar toolbar;
     Fragment devices;
     Fragment places;

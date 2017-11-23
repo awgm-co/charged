@@ -7,6 +7,7 @@
         <container_id>1220</container_id>
         <container_name>220 - Engineering and Energy</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
+        <info>Room 002, Level 1, Engineering and Energy Building</info>
         <keywords>EEB1.002</keywords>
         <lat>-32.066125</lat>
         <lng>115.836961</lng>
@@ -21,7 +22,7 @@
         <container_id>1235</container_id>
         <container_name>235 - Loneragan</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 032, Level 3, Loneragan Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 032, Level 3, Loneragan Building</info>
         <keywords>Lon 3.032\/ LB 3.032</keywords>
         <lat>-32.067252</lat>
         <lng>115.836587</lng>
@@ -36,7 +37,7 @@
         <container_id>1235</container_id>
         <container_name>235 - Loneragan</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 034, Level 3, Loneragan Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 034, Level 3, Loneragan Building</info>
         <keywords>Lon 3.034\/ LB 3.034</keywords>
         <lat>-32.067252</lat>
         <lng>115.836487</lng>
@@ -51,7 +52,7 @@
         <container_id>1245</container_id>
         <container_name>245 - Science and Computing</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 001, Level 3, Science and Computing Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 001, Level 3, Science and Computing Building</info>
         <keywords>SC 3.001</keywords>
         <lat>-32.066441</lat>
         <lng>115.836669</lng>
@@ -66,7 +67,7 @@
         <container_id>1245</container_id>
         <container_name>245 - Science and Computing</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 038, Level 3, Science and Computing Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 038, Level 3, Science and Computing Building</info>
         <keywords>SC 3.038</keywords>
         <lat>-32.066499</lat>
         <lng>115.836689</lng>
@@ -81,7 +82,7 @@
         <container_id>1250</container_id>
         <container_name>250 - Veterinary Biology</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 109, Level 2, Veterinary Biology Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 109, Level 2, Veterinary Biology Building</info>
         <keywords>VBS 2.109</keywords>
         <lat>-32.067918</lat>
         <lng>115.836822</lng>
@@ -96,7 +97,7 @@
         <container_id>1250</container_id>
         <container_name>250 - Veterinary Biology</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 108, Level 3, Veterinary Biology Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 108, Level 3, Veterinary Biology Building</info>
         <keywords>VBS 3.108</keywords>
         <lat>-32.067927</lat>
         <lng>115.836822</lng>
@@ -126,7 +127,7 @@
         <container_id>1340</container_id>
         <container_name>340 - Physical Sciences</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 010, Level 2, Physical Sciences Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 010, Level 2, Physical Sciences Building</info>
         <keywords>PhSc 2.010</keywords>
         <lat>-32.066726</lat>
         <lng>115.836097</lng>
@@ -156,7 +157,7 @@
         <container_id>1350</container_id>
         <container_name>350 - Library (North)</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 006, Level 2, Library (North) Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 006, Level 2, Library (North) Building</info>
         <keywords>LibN 2.006</keywords>
         <lat>-32.066939</lat>
         <lng>115.834642</lng>
@@ -186,7 +187,7 @@
         <container_id>1351</container_id>
         <container_name>351 - Lecture Theatres</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>2.002 (Room 002), Level 2, Lecture Theatres Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>2.002 (Room 002), Level 2, Lecture Theatres Building</info>
         <keywords>GCL1</keywords>
         <lat>-32.066958</lat>
         <lng>115.835534</lng>
@@ -201,7 +202,7 @@
         <container_id>1440</container_id>
         <container_name>440 - Social Sciences</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 044, Level 2, Social Sciences Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 044, Level 2, Social Sciences Building</info>
         <keywords>SocSc 2.044 \/ SS 2.044</keywords>
         <lat>-32.066952</lat>
         <lng>115.834202</lng>
@@ -216,7 +217,7 @@
         <container_id>1450</container_id>
         <container_name>450 - Education and Humanities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 077, Level 3, Education and Humanities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 077, Level 3, Education and Humanities Building</info>
         <keywords>EH 3.077</keywords>
         <lat>-32.067007</lat>
         <lng>115.832719</lng>
@@ -231,7 +232,7 @@
         <container_id>1450</container_id>
         <container_name>450 - Education and Humanities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 022, Level 3, Education and Humanities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 022, Level 3, Education and Humanities Building</info>
         <keywords>EH 3.022</keywords>
         <lat>-32.066762</lat>
         <lng>115.83276</lng>
@@ -246,7 +247,7 @@
         <container_id>1450</container_id>
         <container_name>450 - Education and Humanities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 067, Level 2, Education and Humanities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 067, Level 2, Education and Humanities Building</info>
         <keywords>EH 2.067</keywords>
         <lat>-32.066929</lat>
         <lng>115.832771</lng>
@@ -261,7 +262,7 @@
         <container_id>1450</container_id>
         <container_name>450 - Education and Humanities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 028, Level 3, Education and Humanities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 028, Level 3, Education and Humanities Building</info>
         <keywords>EH 3.028</keywords>
         <lat>-32.066582</lat>
         <lng>115.832717</lng>
@@ -276,7 +277,7 @@
         <container_id>1450</container_id>
         <container_name>450 - Education and Humanities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 080, Level 3, Education and Humanities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 080, Level 3, Education and Humanities Building</info>
         <keywords>EH 3.080</keywords>
         <lat>-32.067002</lat>
         <lng>115.832553</lng>
@@ -291,7 +292,7 @@
         <container_id>1450</container_id>
         <container_name>450 - Education and Humanities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 082, Level 3, Education and Humanities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 082, Level 3, Education and Humanities Building</info>
         <keywords>EH 3.082</keywords>
         <lat>-32.066927</lat>
         <lng>115.832555</lng>
@@ -306,7 +307,7 @@
         <container_id>1460</container_id>
         <container_name>460 - ECL</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 039, Level 2, Economics, Commerce and Law Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 039, Level 2, Economics, Commerce and Law Building</info>
         <keywords>ECL 2.039</keywords>
         <lat>-32.067399</lat>
         <lng>115.83443</lng>
@@ -321,7 +322,7 @@
         <container_id>1460</container_id>
         <container_name>460 - ECL</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 044, Level 2, Economics, Commerce and Law Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 044, Level 2, Economics, Commerce and Law Building</info>
         <keywords>ECL 2.044</keywords>
         <lat>-32.067399</lat>
         <lng>115.83435</lng>
@@ -336,7 +337,7 @@
         <container_id>1460</container_id>
         <container_name>460 - ECL</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 034, Level 4, Economics, Commerce and Law Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 034, Level 4, Economics, Commerce and Law Building</info>
         <keywords>ECL 4.034</keywords>
         <lat>-32.067476</lat>
         <lng>115.83443</lng>
@@ -351,7 +352,7 @@
         <container_id>1460</container_id>
         <container_name>460 - ECL</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 038, Level 4, Economics, Commerce and Law Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 038, Level 4, Economics, Commerce and Law Building</info>
         <keywords>ECL 4.038</keywords>
         <lat>-32.067474</lat>
         <lng>115.834302</lng>
@@ -366,7 +367,7 @@
         <container_id>1460</container_id>
         <container_name>460 - ECL</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 046, Level 2, Economics, Commerce and Law Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 046, Level 2, Economics, Commerce and Law Building</info>
         <keywords>ECL 2.046</keywords>
         <lat>-32.067474</lat>
         <lng>115.834301</lng>
@@ -381,7 +382,7 @@
         <container_id>1465</container_id>
         <container_name>465 - Law</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 110, Level 1, Law, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 110, Level 1, Law Building</info>
         <keywords>Law 1.110</keywords>
         <lat>-32.067814</lat>
         <lng>115.833825</lng>
@@ -396,7 +397,7 @@
         <container_id>1465</container_id>
         <container_name>465 - Law</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 116, Level 2, Law, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 116, Level 2, Law Building</info>
         <keywords>Law 2.116</keywords>
         <lat>-32.067813</lat>
         <lng>115.833825</lng>
@@ -411,26 +412,12 @@
         <container_id>1490</container_id>
         <container_name>490 - Amenities</container_name>
         <icon_file_name>computing-lab.png</icon_file_name>
-        <info>Room 050, Level 2, Amenities Building, Murdoch University (Murdoch Campus), South Street, Murdoch</info>
+        <info>Room 050, Level 2, Amenities Building</info>
         <keywords>Amens 2.050</keywords>
         <lat>-32.068481</lat>
         <lng>115.83382</lng>
         <location_code>14902050</location_code>
         <name>Kulbardi Computer Lab</name>
         <signage>490.2.050</signage>
-    </place>
-    <place>
-        <category_handle>computing-lab</category_handle>
-        <category_id>5</category_id>
-        <category_name>Computing Labs</category_name>
-        <container_id>1807</container_id>
-        <container_name>807 - RISE Transportable 2</container_name>
-        <icon_file_name>computing-lab.png</icon_file_name>
-        <keywords>RISE2 1.001C</keywords>
-        <lat>-32.070152</lat>
-        <lng>115.840472</lng>
-        <location_code>18071001C</location_code>
-        <name>ROTA Transportable 2</name>
-        <signage>807.1.001C</signage>
     </place>
 </places>
