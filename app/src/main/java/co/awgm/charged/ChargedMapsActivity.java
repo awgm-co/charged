@@ -1,8 +1,12 @@
 package co.awgm.charged;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,8 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.Checkable;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -30,10 +32,12 @@ import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
@@ -57,7 +61,7 @@ public class ChargedMapsActivity extends AppCompatActivity
      * Flag indicating whether a requested permission has been denied after returning in
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
      */
-    private boolean mPermissionDenied = false;
+    //private boolean mPermissionDenied = false;
     private static String M = "CHARGED_MAPS_ACTIVITY";
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -66,6 +70,7 @@ public class ChargedMapsActivity extends AppCompatActivity
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
+    private LatLng lastKnownLatLng;
     private CameraPosition mCameraPosition;
     // Keys for storing activity state.
     public static final String KEY_CAMERA_POSITION = "camera_position";
@@ -73,10 +78,11 @@ public class ChargedMapsActivity extends AppCompatActivity
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 15;
-    private boolean mLocationPermissionGranted;
-    boolean mLocationPermissionDenied;
+    private final LatLng mDefaultLocation = new LatLng(-32.0667187,115.8329096);
+    private static final int DEFAULT_ZOOM = 18;
+    public boolean mFineLocationPermissionGranted;
+    public boolean mCoarseLocationPermissionGranted;
+    //boolean mLocationPermissionDenied;
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
@@ -90,37 +96,35 @@ public class ChargedMapsActivity extends AppCompatActivity
 
 
     private UiSettings mUiSettings;
-    private CheckBox mMyLocationButtonCheckbox;
-    private CheckBox mMyLocationLayerCheckbox;
 
-    private DatabaseHelper db;
+    private PlacesDatabaseHelper db;
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        Log.d(M, "OnCreateOptionsMenu()");
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.toolbar, menu);
-//
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(M, "OnCreateOptionsMenu()");
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.map_toolbar, menu);
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(M, "onOptionsItemSelected()");
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Log.d(M, "onOptionsItemSelected():case:action_settings");
-                //Toast.makeText(this, "Pretend the Settings opened", Toast.LENGTH_LONG).show();
-                // User chose the "Settings" item, show the app settings UI...
+                //Log.d(M, "onOptionsItemSelected():case:action_settings");
                 Intent toolbarSettings = new Intent(this,
                         SettingsActivity.class);
                 startActivity(toolbarSettings);
                 return true;
+
             case R.id.action_nearby:
                 getDeviceLocation();
                 Toast.makeText(this, "Refreshing the Map...", Toast.LENGTH_LONG).show();
-                Log.d(M, "onOptionsItemSelected():Refreshing the Map");
+                Log.d(M, "Refreshing the Map");
                 return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -152,14 +156,6 @@ public class ChargedMapsActivity extends AppCompatActivity
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-//        mMyLocationButtonCheckbox = (CheckBox) findViewById(R.id.mylocationbutton_toggle);
-//        mMyLocationLayerCheckbox = (CheckBox) findViewById(R.id.mylocationlayer_toggle);
-
-        db = new DatabaseHelper(this);
-
-        // Prompt the user for permission.
-        getLocationPermission();
-
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -169,6 +165,11 @@ public class ChargedMapsActivity extends AppCompatActivity
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        //New PlacesDatabaseHelper
+        db = new PlacesDatabaseHelper(this);
+
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -181,15 +182,11 @@ public class ChargedMapsActivity extends AppCompatActivity
             mapFragment.setRetainInstance(true);
         }
 
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-
         // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+        //getDeviceLocation();
 
-
-
+        // Prompt the user for permission.
+        getLocationPermission();
     }
 
 
@@ -200,10 +197,9 @@ public class ChargedMapsActivity extends AppCompatActivity
 
         mUiSettings = mMap.getUiSettings();
 
-        // Keep the UI Settings state in sync with the checkboxes.
-        mUiSettings.setZoomControlsEnabled(isChecked(R.id.zoom_buttons_toggle));
-        mUiSettings.setCompassEnabled(isChecked(R.id.compass_toggle));
-        mUiSettings.setMyLocationButtonEnabled(isChecked(R.id.mylocationbutton_toggle));
+        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setCompassEnabled(true);
+
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -212,29 +208,33 @@ public class ChargedMapsActivity extends AppCompatActivity
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.d(M, "Passed Permissions Check");
-            mMap.setMyLocationEnabled(isChecked(R.id.mylocationlayer_toggle));
+            mFineLocationPermissionGranted = true;
+            mCoarseLocationPermissionGranted = true;
+            mMap.setMyLocationEnabled(true);
+            mUiSettings.setMyLocationButtonEnabled(true);
+            updateLocationUI();
 
+        } else {
+            Log.d(M, "Failed Permissions Check");
+            updateLocationUI();
         }
 
-        mUiSettings.setMapToolbarEnabled(true);
-
-        mUiSettings.setScrollGesturesEnabled(isChecked(R.id.scroll_toggle));
-        mUiSettings.setZoomGesturesEnabled(isChecked(R.id.zoom_gestures_toggle));
-        mUiSettings.setTiltGesturesEnabled(isChecked(R.id.tilt_toggle));
-        mUiSettings.setRotateGesturesEnabled(isChecked(R.id.rotate_toggle));
-
         mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setIndoorEnabled(true);
+        mMap.setBuildingsEnabled(true);
+        mUiSettings.setMapToolbarEnabled(true);
+        mUiSettings.setIndoorLevelPickerEnabled(true);
+        mUiSettings.setScrollGesturesEnabled(true);
+        mUiSettings.setZoomGesturesEnabled(true);
+        mUiSettings.setTiltGesturesEnabled(true);
+        mUiSettings.setRotateGesturesEnabled(true);
 
-        getDeviceLocation();
-        setUpMap();
         AddMarkers();
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
     }
-    /**
-     * Returns whether the checkbox with the given id is checked.
-     */
-    private boolean isChecked(int id) {
-        return ((Checkable) findViewById(id)).isChecked();
-    }
+
 
     /**
      * Checks if the map is ready (which depends on whether the Google Play services APK is
@@ -248,25 +248,9 @@ public class ChargedMapsActivity extends AppCompatActivity
         return true;
     }
 
-    public void setZoomButtonsEnabled(View v) {
-        //Default: checked
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables the zoom controls (+/- buttons in the bottom-right of the map for LTR
-        // locale or bottom-left for RTL locale).
-        mUiSettings.setZoomControlsEnabled(((CheckBox) v).isChecked());
-    }
 
-    public void setCompassEnabled(View v) {
-        //Default: checked
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables the compass (icon in the top-left for LTR locale or top-right for RTL
-        // locale that indicates the orientation of the map).
-        mUiSettings.setCompassEnabled(((CheckBox) v).isChecked());
-    }
+
+
 
     public void setMyLocationButtonEnabled(View v) {
         //Default: un-checked
@@ -279,11 +263,9 @@ public class ChargedMapsActivity extends AppCompatActivity
         // First verify that the location permission has been granted.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            mUiSettings.setMyLocationButtonEnabled(mMyLocationButtonCheckbox.isChecked());
+            mUiSettings.setMyLocationButtonEnabled(true);
         } else {
-            // Uncheck the box and request missing location permission.
-            mMyLocationButtonCheckbox.setChecked(false);
-            getLocationPermission();
+            mUiSettings.setMyLocationButtonEnabled(false);
         }
     }
 
@@ -297,62 +279,24 @@ public class ChargedMapsActivity extends AppCompatActivity
         // location button will never show.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(mMyLocationLayerCheckbox.isChecked());
+            mMap.setMyLocationEnabled(true);
         } else {
-            // Uncheck the box and request missing location permission.
-            mMyLocationLayerCheckbox.setChecked(false);
-            PermissionUtils.requestPermission(this, LOCATION_LAYER_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, false);
+            mMap.setMyLocationEnabled(false);
         }
     }
 
-    public void setScrollGesturesEnabled(View v) {
-        //Default: checked
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables scroll gestures (i.e. panning the map).
-        mUiSettings.setScrollGesturesEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setZoomGesturesEnabled(View v) {
-        //Default: checked
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables zoom gestures (i.e., double tap, pinch & stretch).
-        mUiSettings.setZoomGesturesEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setTiltGesturesEnabled(View v) {
-        //Default: checked
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables tilt gestures.
-        mUiSettings.setTiltGesturesEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setRotateGesturesEnabled(View v) {
-        //Default: checked
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables rotate gestures.
-        mUiSettings.setRotateGesturesEnabled(((CheckBox) v).isChecked());
-    }
 
         /*
          * Request location permission, so that we can get the location of the
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-     private void getLocationPermission() {
+        public void getLocationPermission() {
         Log.d(M, "getLocationPermission()");
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
+                mFineLocationPermissionGranted = true;
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -377,25 +321,26 @@ public class ChargedMapsActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
+                    mFineLocationPermissionGranted = true;
+                    mUiSettings.setMyLocationButtonEnabled(true);
                 }
             }
         }
 
         if (requestCode == MY_LOCATION_PERMISSION_REQUEST_CODE) {
             // Enable the My Location button if the permission has been granted.
-            if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
                 mUiSettings.setMyLocationButtonEnabled(true);
-                //mMyLocationButtonCheckbox.setChecked(true);
+                mFineLocationPermissionGranted = true;
             } else {
-                mLocationPermissionDenied = true;
+                mFineLocationPermissionGranted = false;
             }
 
         } else if (requestCode == LOCATION_LAYER_PERMISSION_REQUEST_CODE) {
@@ -406,91 +351,65 @@ public class ChargedMapsActivity extends AppCompatActivity
                     && ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(isChecked(R.id.mylocationlayer_toggle));
                 mMap.setMyLocationEnabled(true);
-                mMyLocationLayerCheckbox.setChecked(true);
+                mFineLocationPermissionGranted = true;
+                mCoarseLocationPermissionGranted = true;
             } else {
-                mLocationPermissionDenied = true;
+                mFineLocationPermissionGranted = false;
+                mCoarseLocationPermissionGranted = false;
             }
             }
 
         }
     @Override
     protected void onResumeFragments() {
+        Log.d(M,"onResumeFragments");
         super.onResumeFragments();
-        if (mPermissionDenied) {
-            PermissionUtils.PermissionDeniedDialog
-                    .newInstance(false).show(getSupportFragmentManager(), "dialog");
-            showMissingPermissionError();
-            mPermissionDenied = false;
+        if (!mFineLocationPermissionGranted) {
+            updateLocationUI();
+
         }
-    }
-
-    public void setUpMap() {
-        Log.d(M, "setUpMap()");
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setIndoorEnabled(true);
-        mMap.setBuildingsEnabled(true);
-
-        mMap.getUiSettings().setIndoorLevelPickerEnabled(true);
-        //mMap.getUiSettings().setZoomGesturesEnabled(true);
-        //mMap.getUiSettings().setRotateGesturesEnabled(true);
-
+        getDeviceLocation();
 
     }
 
     private  void AddMarkers() {
         Log.d(M, "AddMarkers()");
 
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("charged_map_marker","drawable", getPackageName()));
+//        Bitmap markerBitmap = Bitmap.createScaledBitmap(bitmap, 80, 80, false);
 
-        int i = 0,j;
-        db.loadMarkersFromFile(this);
-        ArrayList<ChargedPlace> places = db.getAllPlaces();
+        // ArrayList to store the places
+        ArrayList<ChargedPlace> places;
+
+        //Get all the places from the database and store them in the ArrayList
+        places = db.getAllPlaces();
+
+        //For Each place in the ArrayList
         for (ChargedPlace p: places) {
-            db.addPlace(p);
-            Log.d(M, p.getLocationCode());
 
+            //Add a marker to the map with each places information
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(
                             Double.parseDouble(p.getLat()),
                             Double.parseDouble(p.getLng())
                     ))
-                    .title(p.getName().toString().toUpperCase())
-                    .snippet(p.getInfo().toString()));
-            i++;
+                    .title(p.getName().toUpperCase())
+                    .snippet(p.getInfo())
+                    //.icon(BitmapDescriptorFactory.fromFile("charged_map_marker")));
+                    .icon(bitmapDescriptorFromVector(this, R.drawable.ic_chargedmapmarker)));
+
+
+            //REFERENCE:
+            //https://stackoverflow.com/questions/41509791/how-to-fix-custom-size-of-google-maps-marker-in-android
+
+
+            /*Un-Comment to see the marker text in the log*/
+
+            //Log.d(M,p.getName().toUpperCase());
+            //Log.d(M, p.getInfo());
         }
-
-        j = db.getPlacesCount();
-//        if(db.getPlacesCount()<1){
-//            Log.d(M,"Database contained no places");
-//            db.loadMarkersFromFile(this);
-//        }
-
-//        mMap.addMarker(new MarkerOptions()
-
-//                .position( new LatLng(-32.067003,115.834838))
-//                .title("Test Marker"));
-
-
-//        for (i = 0; i < places.size(); i++){
-//            Log.d("GENERATE MARKERS", places.get(i).getLocationCode());
-//
-//            mMap.addMarker(new MarkerOptions()
-//                    .position(new LatLng(
-//                            Double.parseDouble(places.get(i).getLat()),
-//                            Double.parseDouble(places.get(i).getLng())
-//                    ))
-//                    .title(places.get(i).getName().toString().toUpperCase())
-//                    .snippet(places.get(i).getInfo().toString()));
-//        }
-
-
-        Toast.makeText(this, "Loaded " + i + " of " + j + " Places", Toast.LENGTH_LONG).show();
-
-
-
     }
-
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
@@ -500,45 +419,38 @@ public class ChargedMapsActivity extends AppCompatActivity
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
-        try {
-            if (mLocationPermissionGranted) {
-                Log.d(M, "Current location is available. locating user");
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isComplete()) {
-                            Log.d(M, "Task Complete");
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            LatLng lastKnownLatLng = new LatLng(
-                                    mLastKnownLocation.getLatitude(),
-                                    mLastKnownLocation.getLongitude()
-                            );
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(lastKnownLatLng, DEFAULT_ZOOM));
 
-                            Log.d(M, "Placing 'You are here' marker...");
+        if (mFineLocationPermissionGranted) {
+            Log.d(M, "Current location is available. locating user");
+            Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
 
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(lastKnownLatLng)
-                                    .title("You are here."));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                        } else {
-                            Log.d(M, "Current location is null. Using defaults.");
-                            Log.e(M, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
+            locationResult.addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    Log.d(M, "Device Located.");
+                    if (location != null) {
+                        // Set the map's camera position to the current location of the device.
+                        mLastKnownLocation = location;
+                        lastKnownLatLng = new LatLng(
+                                mDefaultLocation.latitude,
+                                mDefaultLocation.longitude);
+
+
+                        mMap.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(lastKnownLatLng, DEFAULT_ZOOM));
+                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+                    } else {
+                        Log.d(M, "Current location is null. Using defaults.");
+
+                        mMap.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
-                });
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
+                }
+
+            });
         }
-
-
     }
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
@@ -549,29 +461,34 @@ public class ChargedMapsActivity extends AppCompatActivity
             return;
         }
         try {
-            if (mLocationPermissionGranted) {
-                Log.d(M, "updateLocationUI() if");
+            if (mFineLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
-                Log.d(M, "updateLocationUI() else");
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
-                getLocationPermission();
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
+
     }
     /**
      * Displays a dialog with error message explaining that the location permission is missing.
      */
     private void showMissingPermissionError() {
-        PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
+        PermissionDeniedDialog.newInstance().show(getSupportFragmentManager(), "dialog");
     }
 
-
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
 
 }

@@ -8,12 +8,6 @@
         android:icon="@drawable/ic_nearby"
         android:title="@string/action_nearby"
         app:showAsAction="always"/>
-    <!--
-    <item
-        android:id="@+id/option_get_place"
-        android:title="@string/option_get_place"
-        app:showAsAction="never"/>
-    -->
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
