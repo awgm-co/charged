@@ -48,10 +48,10 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_NICKNAME + " TEXT,"
                 + KEY_CHARGE_TYPE + " TEXT,"
-                + KEY_IMAGE_TYPE + " TEXT,"
+                + KEY_CHARGE_TIME + " TEXT,"
                 + KEY_MAKE + " TEXT,"
                 + KEY_MODEL + " TEXT,"
-                + KEY_CHARGE_TIME + " TEXT,"
+                + KEY_IMAGE_TYPE + " TEXT,"
                 + KEY_TYPE + " TEXT"
                 + ")";
         db.execSQL(CREATE_DEVICES_TABLE);
@@ -74,10 +74,10 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
 
         values.put(KEY_NICKNAME, device.getNickName());
         values.put(KEY_CHARGE_TYPE, device.getChargeTime());
-        values.put(KEY_IMAGE_TYPE, device.getImageType());
+        values.put(KEY_CHARGE_TIME, device.getChargeTime());
         values.put(KEY_MODEL, device.getModel());
         values.put(KEY_MAKE, device.getMake());
-        values.put(KEY_CHARGE_TIME, device.getChargeTime());
+        values.put(KEY_IMAGE_TYPE, device.getImageType());
         values.put(KEY_TYPE, device.getType());
 
         db.insert(TABLE_DEVICES, null, values);
@@ -93,10 +93,11 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
                 KEY_ID,
                 KEY_NICKNAME,
                 KEY_CHARGE_TYPE,
-                KEY_IMAGE_TYPE,
+                KEY_CHARGE_TIME,
                 KEY_MAKE,
                 KEY_MODEL,
-                KEY_CHARGE_TIME,
+                KEY_IMAGE_TYPE,
+
                 KEY_TYPE}, KEY_ID + "=?", new String[]{String.valueOf(id)},null, null, null, null);
 
         if (cursor != null) {
@@ -150,10 +151,10 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
 
         values.put(KEY_NICKNAME, device.getNickName());
         values.put(KEY_CHARGE_TYPE, device.getChargeType());
-        values.put(KEY_IMAGE_TYPE, device.getChargeTime());
+        values.put(KEY_CHARGE_TIME, device.getChargeTime());
         values.put(KEY_MAKE, device.getMake());
         values.put(KEY_MODEL, device.getModel());
-        values.put(KEY_CHARGE_TIME, device.getChargeTime());
+        values.put(KEY_IMAGE_TYPE, device.getChargeTime());
         values.put(KEY_TYPE, device.getType());
 
         int result = db.update(TABLE_DEVICES, values, KEY_ID + "=?",new String[]{String.valueOf(device.getID())});
@@ -275,7 +276,14 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
                 "Galaxy S3",
                 "phone"));
 
-
+        addDevice(
+                new ChargedDevice(
+                        "Sir Waffleton",
+                        "240v",
+                        "0",
+                        "Breville",
+                        "Waffle Maker",
+                        "other"));
 
 
 
