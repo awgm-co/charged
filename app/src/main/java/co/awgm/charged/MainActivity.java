@@ -1,7 +1,9 @@
 package co.awgm.charged;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -9,13 +11,14 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PlacesFragment.OnListFragmentInteractionListener, DevicesFragment.OnListFragmentInteractionListener {
 
     final static String M = "MAIN_ACTIVITY";
     private SharedPreferences mSharedPreferences;
@@ -25,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     Toolbar toolbar;
+
+//    DevicesFragment devices;
+//    PlacesFragment places;
+
     Fragment devices;
     Fragment places;
 
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_devices:
                     if(devices == null){
                         Log.d(M,"devices fragment was null");
-                        devices = new Fragment();
+                        devices = new DevicesFragment();
                     }
                     if(devices != null) {
                         //Log.d(M,"serving devices fragment");
@@ -54,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_places:
                     if(places == null){
                         Log.d(M,"places fragment was null");
-                        places = new Fragment();
+                        places = new PlacesFragment();
                     }
                     if(places != null) {
                         //Log.d(M,"serving places fragment");
@@ -76,14 +83,16 @@ public class MainActivity extends AppCompatActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         isFirstRun = mSharedPreferences.getBoolean("FIRSTRUN", true);
 
-        //New PlacesDatabaseHelper
-        placesDb = new PlacesDatabaseHelper(this);
 
-        //New DevicesDatabaseHelper
-        devicesDb = new DevicesDatabaseHelper(this);
+
 
         if (isFirstRun)
         {
+            Log.d(M,"Performing First Run Setup");
+            //New PlacesDatabaseHelper
+            placesDb = new PlacesDatabaseHelper(this);
+            //New DevicesDatabaseHelper
+            devicesDb = new DevicesDatabaseHelper(this);
             //Populate the Devices DB with dummy entries for testing
             devicesDb.LoadTestDevices();
             //Load the marker information from the XML file into the Database
@@ -101,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 beginTransaction();
         if(devices == null){
             Log.d(M,"ONE TIME: devices fragment was null");
-            devices = new Fragment();
+            devices = new DevicesFragment();
         }
         if(devices != null) {
             Log.d(M,"ONE TIME: serving devices fragment");
@@ -126,12 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Pretend the Settings opened", Toast.LENGTH_LONG).show();
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
-            //case R.id.option_get_place:
-                //Handles a click on the menu option to get a place.
-                //showCurrentPlace();
-                //return true;
-            //May be redundant as the nearby bottom navigation goes to the same place
-            // and it's much closer to the users thumb
 
             case R.id.action_nearby:
                 // User chose the "Nearby" item, open the map
@@ -157,6 +160,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onListFragmentInteraction(ChargedPlace item) {
+        //Onclick action on the list
+    }
 
-
+    @Override
+    public void onListFragmentInteraction(ChargedDevice item) {
+        //Onclick action on the list
+    }
 }

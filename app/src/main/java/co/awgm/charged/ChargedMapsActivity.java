@@ -61,7 +61,7 @@ public class ChargedMapsActivity extends AppCompatActivity
      * Flag indicating whether a requested permission has been denied after returning in
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
      */
-    private boolean mPermissionDenied = false;
+    //private boolean mPermissionDenied = false;
     private static String M = "CHARGED_MAPS_ACTIVITY";
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -80,8 +80,9 @@ public class ChargedMapsActivity extends AppCompatActivity
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-32.0667187,115.8329096);
     private static final int DEFAULT_ZOOM = 18;
-    private boolean mLocationPermissionGranted;
-    boolean mLocationPermissionDenied;
+    public boolean mFineLocationPermissionGranted;
+    public boolean mCoarseLocationPermissionGranted;
+    //boolean mLocationPermissionDenied;
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
@@ -164,13 +165,8 @@ public class ChargedMapsActivity extends AppCompatActivity
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-
-
         //New PlacesDatabaseHelper
         db = new PlacesDatabaseHelper(this);
-
-
-
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -203,7 +199,7 @@ public class ChargedMapsActivity extends AppCompatActivity
 
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setCompassEnabled(true);
-        mUiSettings.setMyLocationButtonEnabled(true);
+
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -212,8 +208,15 @@ public class ChargedMapsActivity extends AppCompatActivity
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.d(M, "Passed Permissions Check");
+            mFineLocationPermissionGranted = true;
+            mCoarseLocationPermissionGranted = true;
             mMap.setMyLocationEnabled(true);
+            mUiSettings.setMyLocationButtonEnabled(true);
+            updateLocationUI();
 
+        } else {
+            Log.d(M, "Failed Permissions Check");
+            updateLocationUI();
         }
 
         mMap.setOnMyLocationButtonClickListener(this);
@@ -228,8 +231,6 @@ public class ChargedMapsActivity extends AppCompatActivity
         mUiSettings.setRotateGesturesEnabled(true);
 
         AddMarkers();
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
@@ -264,7 +265,7 @@ public class ChargedMapsActivity extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             mUiSettings.setMyLocationButtonEnabled(true);
         } else {
-            getLocationPermission();
+            mUiSettings.setMyLocationButtonEnabled(false);
         }
     }
 
@@ -279,10 +280,8 @@ public class ChargedMapsActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-            mUiSettings.setMyLocationButtonEnabled(true);
         } else {
-            PermissionUtils.requestPermission(this, LOCATION_LAYER_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, false);
+            mMap.setMyLocationEnabled(false);
         }
     }
 
@@ -292,12 +291,12 @@ public class ChargedMapsActivity extends AppCompatActivity
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-     private void getLocationPermission() {
+        public void getLocationPermission() {
         Log.d(M, "getLocationPermission()");
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
+                mFineLocationPermissionGranted = true;
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -322,29 +321,26 @@ public class ChargedMapsActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
+                    mFineLocationPermissionGranted = true;
                     mUiSettings.setMyLocationButtonEnabled(true);
-                    updateLocationUI();
-                    getDeviceLocation();
                 }
             }
         }
 
         if (requestCode == MY_LOCATION_PERMISSION_REQUEST_CODE) {
             // Enable the My Location button if the permission has been granted.
-            if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
                 mUiSettings.setMyLocationButtonEnabled(true);
-                getDeviceLocation();
-                updateLocationUI();
+                mFineLocationPermissionGranted = true;
             } else {
-                mLocationPermissionDenied = true;
+                mFineLocationPermissionGranted = false;
             }
 
         } else if (requestCode == LOCATION_LAYER_PERMISSION_REQUEST_CODE) {
@@ -356,24 +352,25 @@ public class ChargedMapsActivity extends AppCompatActivity
                     this,
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
-                mUiSettings.setMyLocationButtonEnabled(true);
-                getDeviceLocation();
-                updateLocationUI();
+                mFineLocationPermissionGranted = true;
+                mCoarseLocationPermissionGranted = true;
             } else {
-                mLocationPermissionDenied = true;
+                mFineLocationPermissionGranted = false;
+                mCoarseLocationPermissionGranted = false;
             }
             }
 
         }
     @Override
     protected void onResumeFragments() {
+        Log.d(M,"onResumeFragments");
         super.onResumeFragments();
-        if (mPermissionDenied) {
-            PermissionUtils.PermissionDeniedDialog
-                    .newInstance(false).show(getSupportFragmentManager(), "dialog");
-            showMissingPermissionError();
-            mPermissionDenied = false;
+        if (!mFineLocationPermissionGranted) {
+            updateLocationUI();
+
         }
+        getDeviceLocation();
+
     }
 
     private  void AddMarkers() {
@@ -423,13 +420,14 @@ public class ChargedMapsActivity extends AppCompatActivity
          * cases when a location is not available.
          */
 
-        if (mLocationPermissionGranted) {
+        if (mFineLocationPermissionGranted) {
             Log.d(M, "Current location is available. locating user");
             Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
 
             locationResult.addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
+                    Log.d(M, "Device Located.");
                     if (location != null) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = location;
@@ -452,8 +450,6 @@ public class ChargedMapsActivity extends AppCompatActivity
                 }
 
             });
-
-
         }
     }
     /**
@@ -465,14 +461,13 @@ public class ChargedMapsActivity extends AppCompatActivity
             return;
         }
         try {
-            if (mLocationPermissionGranted) {
+            if (mFineLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
-                getLocationPermission();
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
@@ -483,7 +478,7 @@ public class ChargedMapsActivity extends AppCompatActivity
      * Displays a dialog with error message explaining that the location permission is missing.
      */
     private void showMissingPermissionError() {
-        PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
+        PermissionDeniedDialog.newInstance().show(getSupportFragmentManager(), "dialog");
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {

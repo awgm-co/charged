@@ -24,7 +24,7 @@ public class PlacesDatabaseHelper extends SQLiteOpenHelper {
 
     XmlPullParserFactory pullParserFactory;
 
-    final static String M = "DATABASE_HELPER";
+    final static String M = "PLACES_DATABASE_HELPER";
 
     private static final int DATABASE_VERSION = 1;
 

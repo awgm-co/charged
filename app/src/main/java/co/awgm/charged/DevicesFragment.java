@@ -10,9 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import co.awgm.charged.dummy.DummyContent;
-import co.awgm.charged.dummy.DummyContent.DummyItem;
-
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -26,6 +23,7 @@ public class DevicesFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    DevicesDatabaseHelper db;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,7 +65,8 @@ public class DevicesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new DeviceRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            db = new DevicesDatabaseHelper(getContext());
+            recyclerView.setAdapter(new DeviceRecyclerViewAdapter(db.getChargedDevices(), mListener));
         }
         return view;
     }
@@ -102,6 +101,6 @@ public class DevicesFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(ChargedDevice item);
     }
 }

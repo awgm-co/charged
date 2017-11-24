@@ -9,19 +9,18 @@ import android.widget.TextView;
 import java.util.List;
 
 import co.awgm.charged.PlacesFragment.OnListFragmentInteractionListener;
-import co.awgm.charged.dummy.DummyContent.DummyItem;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ChargedPlace} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<ChargedPlace> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public PlacesRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public PlacesRecyclerViewAdapter(List<ChargedPlace> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -34,18 +33,19 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(String.valueOf(mValues.get(position).getID()));
+        holder.mContentView.setText(mValues.get(position).getName());
 
+        final ChargedPlace val = mValues.get(position);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(val);
                 }
             }
         });
@@ -60,7 +60,7 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public ChargedPlace mItem;
 
         public ViewHolder(View view) {
             super(view);

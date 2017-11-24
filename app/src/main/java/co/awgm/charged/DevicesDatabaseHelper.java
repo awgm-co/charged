@@ -19,7 +19,7 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
 
     XmlPullParserFactory pullParserFactory;
 
-    final static String M = "DATABASE_HELPER";
+    final static String M = "DEVICES_DATABASE_HELPER";
 
     private static final int DATABASE_VERSION = 1;
 
@@ -116,7 +116,7 @@ public class DevicesDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<ChargedDevice> getChargedDevices(){
-        Log.d(M, "getChargedPlaces");
+        Log.d(M, "getChargedDevices");
 
         ArrayList<ChargedDevice> devicesList = new ArrayList<>();
 

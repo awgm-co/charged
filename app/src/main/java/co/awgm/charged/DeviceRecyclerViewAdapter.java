@@ -9,19 +9,18 @@ import android.widget.TextView;
 import java.util.List;
 
 import co.awgm.charged.DevicesFragment.OnListFragmentInteractionListener;
-import co.awgm.charged.dummy.DummyContent.DummyItem;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ChargedDevice} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<ChargedDevice> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public DeviceRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public DeviceRecyclerViewAdapter(List<ChargedDevice> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -36,8 +35,9 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(String.valueOf(mValues.get(position).getID()));
+        String content = mValues.get(position).getMake() + " " + mValues.get(position).getModel();
+        holder.mContentView.setText(content);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +60,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public ChargedDevice mItem;
 
         public ViewHolder(View view) {
             super(view);

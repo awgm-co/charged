@@ -2,6 +2,7 @@ package co.awgm.charged;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,8 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import co.awgm.charged.dummy.DummyContent;
-import co.awgm.charged.dummy.DummyContent.DummyItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -26,6 +28,7 @@ public class PlacesFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private PlacesDatabaseHelper db;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,7 +70,10 @@ public class PlacesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new PlacesRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            db = new PlacesDatabaseHelper(getContext());
+            System.out.println(db.getChargedPlaces());
+            System.out.println(db.getChargedPlaces());
+            recyclerView.setAdapter(new PlacesRecyclerViewAdapter(db.getChargedPlaces(), mListener));
         }
         return view;
     }
@@ -102,6 +108,6 @@ public class PlacesFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(ChargedPlace item);
     }
 }
