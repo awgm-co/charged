@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -24,6 +26,7 @@ public class DevicesFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     DevicesDatabaseHelper db;
+    ArrayList<ChargedDevice> devicesList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -49,6 +52,9 @@ public class DevicesFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        db = new DevicesDatabaseHelper(getContext());
+        devicesList = new ArrayList<ChargedDevice>();
+            //devicesList = db.getChargedDevices();
     }
 
     @Override
@@ -65,11 +71,14 @@ public class DevicesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            db = new DevicesDatabaseHelper(getContext());
-            recyclerView.setAdapter(new DeviceRecyclerViewAdapter(db.getChargedDevices(), mListener));
+            devicesList = new ArrayList<ChargedDevice>();
+            devicesList = db.getChargedDevices();
+            recyclerView.setAdapter(new DeviceRecyclerViewAdapter(devicesList, mListener));
         }
         return view;
     }
+
+
 
 
     @Override
@@ -87,6 +96,7 @@ public class DevicesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     /**

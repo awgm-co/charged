@@ -17,7 +17,7 @@ public class ChargedDevice {
     private String make;
     private String model;
     private String chargeTime;
-    private int type;
+    private String type;
 
 
     public int getID() { return this.ID; }
@@ -50,9 +50,9 @@ public class ChargedDevice {
 
     public void setChargeTime(String chargeTime) { this.chargeTime = chargeTime; }
 
-    public int getType() { return this.type; }
+    public String getType() { return this.type; }
 
-    public void setType(int type) { this.type = type; }
+    public void setType(String type) { this.type = type; }
 
     public ChargedDevice(){
         //Default Constructor

@@ -2,6 +2,7 @@ package co.awgm.charged;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -36,7 +37,7 @@ public class AddDevice extends AppCompatActivity {
     }
 
 
-    public void onSubmit(){
+    public void onSubmit(View view){
         //(TextView)findViewById(TEXT1).getText().toString();
         EditText nameHolder = (EditText)findViewById(R.id.deviceName);
         String name = nameHolder.getText().toString();
@@ -49,7 +50,7 @@ public class AddDevice extends AppCompatActivity {
 
         RadioGroup deviceSelectGroup = (RadioGroup)findViewById(R.id.deviceSelectGroup);
         int selectedRadio = deviceSelectGroup.getCheckedRadioButtonId();
-
+        String type = findViewById(selectedRadio).toString();
         Spinner chargeTypeHolder = (Spinner)findViewById(R.id.reqCharger);
         String chargeType = chargeTypeHolder.getSelectedItem().toString();
 
@@ -62,8 +63,11 @@ public class AddDevice extends AppCompatActivity {
         fillDevice.setChargeTime(chargeTime);
         fillDevice.setMake(make);
         fillDevice.setModel(model);
-        fillDevice.setType(selectedRadio);
+        //fillDevice.setType(selectedRadio);
+        fillDevice.setImageType(type);
 
-
+        DevicesDatabaseHelper db = new DevicesDatabaseHelper(this);
+        db.addDevice(fillDevice);
+        finish();
     }
 }

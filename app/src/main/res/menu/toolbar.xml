@@ -9,6 +9,11 @@
         android:title="@string/action_nearby"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/action_addDevice"
+        android:title="@string/action_addDevice"
+        app:showAsAction="never" />
+
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never"/>

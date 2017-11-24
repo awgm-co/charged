@@ -53,9 +53,11 @@ public class MainActivity extends AppCompatActivity implements PlacesFragment.On
                     }
                     if(devices != null) {
                         //Log.d(M,"serving devices fragment");
+                        devices = new DevicesFragment();
                         bottomNav.replace(R.id.content, devices);
                         bottomNav.commit();
                     }
+
                     return true;
 
                 case R.id.nav_places:
@@ -74,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements PlacesFragment.On
         }
 
     };
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +129,13 @@ public class MainActivity extends AppCompatActivity implements PlacesFragment.On
     }
 
     @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(M, "onOptionsItemSelected()");
         switch (item.getItemId()) {
@@ -145,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements PlacesFragment.On
                 Log.d(M, "onOptionsItemSelected():case:action_nearby");
                 return true;
 
+            case R.id.action_addDevice:
+                // User chose the "Add Device" item, open the map
+                Intent addDev = new Intent(this, AddDevice.class);
+                startActivity(addDev);
+                Log.d(M, "onOptionsItemSelected():case:action_addDevice");
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

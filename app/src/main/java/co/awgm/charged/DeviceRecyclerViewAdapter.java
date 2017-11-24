@@ -16,9 +16,8 @@ import co.awgm.charged.DevicesFragment.OnListFragmentInteractionListener;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ChargedDevice} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ *
  */
-//public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder> {
 public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder> {
 
     private final List<ChargedDevice> mValues;
@@ -40,7 +39,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
 
-        Log.d("DEVICE_VIEW_ADAPTER",mValues.get(position).getImageType().toString());
+        //Log.d("DEVICE_VIEW_ADAPTER",mValues.get(position).getImageType().toString());
 
         switch (mValues.get(position).getImageType().toString()){
 
