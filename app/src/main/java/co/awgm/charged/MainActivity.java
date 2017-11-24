@@ -162,7 +162,12 @@ public class MainActivity extends AppCompatActivity implements PlacesFragment.On
 
     @Override
     public void onListFragmentInteraction(ChargedPlace item) {
-        //Onclick action on the list
+        Log.d(M,"onListFragmentInteraction ChargedPlace");
+
+        Intent intent = new Intent(this, ChargedLiteMapActivity.class);
+// using putExtra(String key, Parcelable value) method
+        intent.putExtra("parcel_data", item);
+        startActivity(intent);
     }
 
     @Override

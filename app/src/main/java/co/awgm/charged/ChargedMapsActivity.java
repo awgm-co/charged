@@ -29,6 +29,8 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -43,6 +46,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 
 import co.awgm.charged.PermissionUtils.PermissionDeniedDialog;
+
+import static com.google.android.gms.maps.SupportMapFragment.newInstance;
 
 public class ChargedMapsActivity extends AppCompatActivity
         implements
@@ -64,6 +69,11 @@ public class ChargedMapsActivity extends AppCompatActivity
     //private boolean mPermissionDenied = false;
     private static String M = "CHARGED_MAPS_ACTIVITY";
     private GoogleMap mMap;
+    private LatLngBounds MurdochCampus;
+    private LatLng NortheastBounds = new LatLng(-32.064011,115.841672);
+    private LatLng SouthwestBounds = new LatLng(-32.071038,115.828000);
+    private float MinZoom = 16;
+    private float SinglePlaceZoom = 20;
     private LocationManager locationManager;
     Toolbar toolbar;
 
@@ -76,7 +86,7 @@ public class ChargedMapsActivity extends AppCompatActivity
     public static final String KEY_CAMERA_POSITION = "camera_position";
     public static final String KEY_LOCATION = "location";
 
-    // A default location (Sydney, Australia) and default zoom to use when location permission is
+    // A default location (Murdoch University) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-32.0667187,115.8329096);
     private static final int DEFAULT_ZOOM = 18;
@@ -87,6 +97,7 @@ public class ChargedMapsActivity extends AppCompatActivity
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
+
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final int LOCATION_LAYER_PERMISSION_REQUEST_CODE = 2;
@@ -200,6 +211,9 @@ public class ChargedMapsActivity extends AppCompatActivity
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setCompassEnabled(true);
 
+        MurdochCampus = new LatLngBounds(SouthwestBounds,NortheastBounds);
+        mMap.setLatLngBoundsForCameraTarget(MurdochCampus);
+
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -223,6 +237,7 @@ public class ChargedMapsActivity extends AppCompatActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setIndoorEnabled(true);
         mMap.setBuildingsEnabled(true);
+        mMap.setMinZoomPreference(MinZoom);
         mUiSettings.setMapToolbarEnabled(true);
         mUiSettings.setIndoorLevelPickerEnabled(true);
         mUiSettings.setScrollGesturesEnabled(true);
@@ -230,12 +245,35 @@ public class ChargedMapsActivity extends AppCompatActivity
         mUiSettings.setTiltGesturesEnabled(true);
         mUiSettings.setRotateGesturesEnabled(true);
 
+
         AddMarkers();
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
 
+public void ViewPlace(ChargedPlace chargedPlace){
+    GoogleMapOptions options = new GoogleMapOptions();
+    options.liteMode(true);
 
+    mMap.clear();
+    mMap.addMarker(new MarkerOptions()
+            .position(new LatLng(
+                    Double.parseDouble(chargedPlace.getLat()),
+                    Double.parseDouble(chargedPlace.getLng())
+            ))
+            .title(chargedPlace.getName().toUpperCase())
+            .snippet(chargedPlace.getInfo())
+            //.icon(BitmapDescriptorFactory.fromFile("charged_map_marker")));
+            .icon(bitmapDescriptorFromVector(this, R.drawable.ic_chargedmapmarker)));
+        // Center camera on the given ChargedPlace
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(
+                        Double.parseDouble(chargedPlace.getLat()),
+                        Double.parseDouble(chargedPlace.getLng())
+                ),
+                SinglePlaceZoom)
+        );
+    }
     /**
      * Checks if the map is ready (which depends on whether the Google Play services APK is
      * available. This should be called prior to calling any methods on GoogleMap.
@@ -481,7 +519,7 @@ public class ChargedMapsActivity extends AppCompatActivity
         PermissionDeniedDialog.newInstance().show(getSupportFragmentManager(), "dialog");
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+    private static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

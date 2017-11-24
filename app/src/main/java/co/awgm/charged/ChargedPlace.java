@@ -1,10 +1,13 @@
 package co.awgm.charged;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Andrew on 30/10/2017.
  */
 
-public class ChargedPlace {
+public class ChargedPlace implements Parcelable{
 
 
 
@@ -158,6 +161,60 @@ public class ChargedPlace {
         categoryId = newCategoryID;
         categoryName = newCategoryName;
         keywords = newKeywords;
+    }
+
+       /* everything below here is for implementing Parcelable */
+
+    // 99.9% of the time you can just ignore this
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(ID);
+        out.writeString(locationCode);
+        out.writeString(lat);
+        out.writeString(lng);
+        out.writeString(name);
+        out.writeString(signage);
+        out.writeString(info);
+        out.writeString(iconFileName);
+        out.writeString(containerId);
+        out.writeString(containerName);
+        out.writeString(categoryId);
+        out.writeString(categoryName);
+        out.writeString(keywords);
+    }
+
+    public static final Parcelable.Creator<ChargedPlace> CREATOR = new Parcelable.Creator<ChargedPlace>() {
+        public ChargedPlace createFromParcel(Parcel in) {
+            return new ChargedPlace(in);
+        }
+
+        public ChargedPlace[] newArray(int size) {
+            return new ChargedPlace[size];
+        }
+    };
+
+    private ChargedPlace (Parcel in) {
+        ID = in.readInt();
+        locationCode = in.readString();
+        lat = in.readString();
+        lng = in.readString();
+        name = in.readString();
+        signage = in.readString();
+        info = in.readString();
+        iconFileName = in.readString();
+        containerId = in.readString();
+        containerName = in.readString();
+        categoryId = in.readString();
+        categoryName = in.readString();
+        keywords = in.readString();
+
     }
     }
 

@@ -71,8 +71,8 @@ public class PlacesFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             db = new PlacesDatabaseHelper(getContext());
-            System.out.println(db.getChargedPlaces());
-            System.out.println(db.getChargedPlaces());
+            //System.out.println(db.getChargedPlaces());
+            //System.out.println(db.getChargedPlaces());
             recyclerView.setAdapter(new PlacesRecyclerViewAdapter(db.getChargedPlaces(), mListener));
         }
         return view;
